@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>單頁式網站範例 (最終版)</title>
+    <style>
+        /* --- 全域與基本設定 --- */
+        
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px; 
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+
+        /* --- Banner 區塊 --- */
+        /*
+         * 【關鍵修正】
+         * 1. 移除了固定的 height，改用 padding 控制上下間距。
+         * 2. 將 align-items 改為 flex-start，讓內容從頂部開始排列。
+         * 3. 增加 padding-top 讓文字與區塊頂部保留一點空間，更美觀。
+        */
+        .banner {
+            padding: 80px 20px 60px 20px; /* 上方留 80px，下方留 60px */
+            background: linear-gradient(135deg, #6dd5ed, #2193b0);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* 讓內容從頂部開始 */
+            text-align: center;
+            color: white;
+        }
+        
+        .banner h1 {
+            font-size: 3.5rem;
+            margin-top: 0; /* 清除 h1 預設的上邊距 */
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+        }
+        
+        /* --- 導覽列 (Navigator) 設計 --- */
+        nav {
+            position: sticky;
+            top: 0;
+            background-color: #2c3e50;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            display: block;
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 15px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: #3498db;
+            color: #ffffff;
+        }
+        
+        /* --- 主要內容區塊 --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        section {
+            padding: 100px 0;
+            min-height: 60vh;
+        }
+
+        section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: #2c3e50;
+        }
+        
+        section p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* 區塊交錯背景色 */
+        #about {
+            background-color: #ffffff;
+        }
+        #services {
+            background-color: #eaecf0;
+        }
+        #portfolio {
+            background-color: #ffffff;
+        }
+        #contact {
+            background-color: #eaecf0;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header id="banner" class="banner">
+        <div class="container">
+            <h1>歡迎來到我的網站</h1>
+            <p style="font-size: 1.5rem;">一個展示現代網頁設計的範例</p>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#banner">首頁</a></li>
+            <li><a href="#about">關於我們</a></li>
+            <li><a href="#services">服務項目</a></li>
+            <li><a href="#portfolio">作品集</a></li>
+            <li><a href="#contact">聯絡方式</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="about">
+            <div class="container">
+                <h2>關於我們</h2>
+                <p>這是一個範例段落。我們致力於提供最優質的用戶體驗與創新的網頁設計。我們的團隊由一群充滿熱情與創意的專業人士組成，專注於前端技術的實現與美學的結合。透過不斷學習與探索，我們希望為客戶打造出不僅功能強大，更具視覺吸引力的數位產品。</p>
+                <p>我們的核心價值是簡潔、效率與美感。我們相信一個好的網站不僅僅是程式碼的堆砌，更是品牌故事的延伸。因此，我們在每一個專案中都投入了大量的時間進行溝通與規劃，確保最終成品能完美符合客戶的期望。</p>
+            </div>
+        </section>
+
+        <section id="services">
+            <div class="container">
+                <h2>服務項目</h2>
+                <p>這是一個範例段落。我們提供多樣化的網頁相關服務，包括但不限於：響應式網頁設計（RWD）、電子商務平台建置、內容管理系統（CMS）開發、以及單頁式應用（SPA）的製作。無論您的需求是建立一個全新的品牌形象網站，或是優化現有的線上服務，我們都有能力提供最適合的解決方案。</p>
+                <p>我們的技術棧涵蓋了最新的前端框架與函式庫，並能根據專案規模與需求，靈活選擇最合適的工具。我們也重視網站的效能與搜尋引擎優化（SEO），確保您的網站在上線後能被更多潛在客戶看見。</p>
+            </div>
+        </section>
+
+        <section id="portfolio">
+            <div class="container">
+                <h2>作品集</h2>
+                <p>這是一個範例段落。在過去的幾年中，我們完成了許多成功的專案，涵蓋了各種不同的產業，從時尚、餐飲到科技與教育。每一個作品都是我們與客戶共同努力的結晶。我們將在這裡展示一些精選案例，讓您更了解我們的設計風格與技術實力。</p>
+                <p>請注意，由於保密協議，部分專案無法公開展示。若您對特定領域的案例有興趣，歡迎直接與我們聯繫，我們將很樂意為您提供更詳細的資訊與說明。</p>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="container">
+                <h2>聯絡方式</h2>
+                <p>這是一個範例段落。若您對我們的服務有任何疑問或興趣，請隨時透過以下方式與我們聯繫。您可以填寫聯絡表單、發送電子郵件，或是在上班時間直接致電給我們。我們期待能有機會與您合作，共同創造出色的數位體驗。</p>
+                <p>電子郵件：example@email.com<br>聯絡電話：(02) 1234-5678</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="footer">
+        <p>&copy; 2025 網頁設計範例. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
