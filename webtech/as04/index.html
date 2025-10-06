@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>冷氣驚魂記 - 捲動故事</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        /* --- 這是您提供的 CSS 模板，我將圖片路徑替換成您的本地檔案 --- */
+
+        /* 將第一張圖片應用到 section1 的 sticky-top 區塊 */
+        #section1 div:first-child {
+            /* 👇 請替換成你的第一張圖片檔名 */
+            background-image: url("fall.jpg");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* 將第二張圖片應用到 section2 的 sticky-top 區塊 */
+        #section2 div:first-child {
+            /* 👇 請替換成你的第二張圖片檔名 */
+            background-image: url("call.jpg");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* 將第三張圖片應用到 section3 的 sticky-top 區塊 */
+        #section3 div:first-child {
+            /* 👇 請替換成你的第三張圖片檔名 */
+            background-image: url("wait.jpg");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* 將第四張圖片應用到 section4 的 sticky-top 區塊 */
+        #section4 div:first-child {
+            /* 👇 請替換成你的第四張圖片檔名 */
+            background-image: url("fixed.jpg");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        /* --- 為結尾頁面新增的 CSS 樣式 --- */
+        #conclusion {
+            height: 100vh; /* 100% Viewport high */
+            width: 100%; /* Full width */
+            background: linear-gradient(to top right, #333, #555);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 50px;
+            box-sizing: border-box;
+        }
+        #conclusion h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+        #conclusion p, #conclusion ul {
+            max-width: 800px;
+        }
+        #conclusion ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            text-align: left;
+        }
+        #conclusion li {
+             margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<section class="container-fluid" style="display:flex; height:500px; background-color:royalblue; color:white;">
+	<div class="row align-items-center"> <div class="col-lg-3"></div>
+		<div class="col-lg-6 col-md-12">
+            <h1>冷氣驚魂記－真實故事改編</h1>
+		</div>
+		<div class="col-lg-3"></div>
+	</div>
+</section>
+
+<section class="row" id="section1" style="height:300vh;">
+	<div class="sticky-top col-6" style="height:100vh;"></div>
+	<div class="col-6 p-5"> <h1>第一章：冷氣突然掉下來</h1>
+        <p>炎炎夏日，剛洗完頭的Kiki悠閒地躺在床上，享受著冷氣的涼爽。突然，一聲巨響劃破寧靜！頭頂上的冷氣機竟然從牆上掉了下來，嚇得她驚聲尖叫，手中的手機也掉落在床邊。</p>
+	</div>
+</section>
+
+<section id="section2" class="row" style="height:300vh;">
+	<div class="sticky-top col-6" style="height:100vh;"></div>
+	<div class="col-6 p-5">
+        <h1>第二章：焦急的呼喚，無應答的房東</h1>
+        <p>驚魂未定的Kiki趕緊撥打房東電話，希望他能及時處理這突發狀況。然而，電話那頭傳來的卻是無止盡的忙音，或是語音信箱的提示。冷氣壞了，房間一片狼藉，Kiki的心情也跌到谷底。</p>
+    </div>
+</section>
+
+<section id="section3" class="row" style="height:300vh;">
+	<div class="sticky-top col-6" style="height:100vh;"></div>
+	<div class="col-6 p-5">
+        <h1>第三章：借宿他鄉，等待的煎熬</h1>
+        <p>無奈之下，Kiki只好收拾行李，暫時借住在朋友家。一晃三天過去了，她每天都嘗試聯繫房東，但始終沒有得到回應。在朋友家的充氣床墊上，伴隨著小風扇的微弱風力，她心中的焦慮與不適日益增長。</p>
+    </div>
+</section>
+
+<section id="section4" class="row" style="height:300vh;">
+	<div class="sticky-top col-6" style="height:100vh;"></div>
+	<div class="col-6 p-5">
+        <h1>第四章：撥雲見日，涼意重歸</h1>
+        <p>終於，在第四天的上午，房東回電了！他得知狀況後，立刻表示會處理，並在當天下午就帶著維修師傅趕到。經過一番努力，冷氣機重新安裝並修復完好。看著再次吹出涼風的冷氣，Kiki臉上露出了久違的笑容，心中的大石終於放下。</p>
+    </div>
+</section>
+
+<section id="conclusion">
+    <h2>圖片生產工具與過程</h2>
+    <p>這系列「冷氣驚魂記」的四張圖片，是透過 Gemini 所創作。</p>
+    <p>創作過程如下：</p>
+    <ul>
+        <li><b>需求描述：</b> 將故事腳本的四個關鍵場景，轉換為圖像生成模型能理解的詳細提示詞 (Prompt)。</li>
+        <li><b>迭代生成：</b> 根據提示詞進行初步生成，並根據結果調整提示詞，以更精確地描述人物表情、場景細節等，進行多次迭代。</li>
+        <li><b>風格統一：</b> 在生成過程中，盡力保持整體視覺風格的統一性，確保四張圖片在色調、人物和場景上都能形成連貫的視覺敘事。</li>
+        <li><b>內容精煉：</b> 最終選取最能表達故事核心情節的圖像，來完成這次的創作。</li>
+    </ul>
+</section>
+
+</body>
+</html>
