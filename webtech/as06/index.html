@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>午夜圖書館</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Noto Serif TC', serif;
+            line-height: 1.9;
+            color: #e0e0e0;
+            background: #0a0e27;
+            overflow-x: hidden;
+        }
+
+        /* 全螢幕 Section */
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 40px;
+            position: relative;
+        }
+
+        .content-wrapper {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        /* 開場 */
+        .hero {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 100%);
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 4em;
+            color: #f0e68c;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(240, 230, 140, 0.3);
+            letter-spacing: 4px;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            color: #b0b0b0;
+            font-style: italic;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #f0e68c;
+            font-size: 0.9em;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* 翻卡區域 */
+        .card-scene {
+            background: linear-gradient(to bottom, #1a1a3e 0%, #2d1b3d 100%);
+        }
+
+        .card-intro {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .card-intro h2 {
+            font-size: 2.5em;
+            color: #dda0dd;
+            margin-bottom: 20px;
+        }
+
+        .card-intro p {
+            font-size: 1.2em;
+            color: #b0b0b0;
+        }
+
+        .flip-card {
+            width: 100%;
+            max-width: 500px;
+            height: 350px;
+            margin: 50px auto;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .flip-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #2d1b3d 0%, #4a2c4a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #dda0dd;
+        }
+
+        .card-front svg {
+            filter: drop-shadow(0 0 10px rgba(221, 160, 221, 0.3));
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #1a1a3e 0%, #2d1b3d 100%);
+            transform: rotateY(180deg);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 2px solid #f0e68c;
+        }
+
+        .card-back h3 {
+            color: #f0e68c;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .card-back p {
+            color: #d0d0d0;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        /* 故事章節 */
+        .chapter {
+            background: linear-gradient(to bottom, #2d1b3d 0%, #1a1a3e 100%);
+            transition: all 0.8s ease-out;
+        }
+
+        .chapter.focus-fade {
+            opacity: 0.25;
+            filter: grayscale(100%) blur(3px);
+            transform: scale(0.95);
+        }
+
+        .chapter h2 {
+            color: #dda0dd;
+            font-size: 2.8em;
+            margin-bottom: 30px;
+            text-shadow: 0 0 15px rgba(221, 160, 221, 0.4);
+        }
+
+        .chapter p {
+            font-size: 1.25em;
+            margin-bottom: 25px;
+            color: #d0d0d0;
+            text-align: justify;
+        }
+
+        .quote {
+            background: rgba(240, 230, 140, 0.05);
+            padding: 30px;
+            border-left: 4px solid #f0e68c;
+            margin: 30px 0;
+            font-style: italic;
+            border-radius: 5px;
+        }
+
+        /* 文字高亮效果 */
+        .highlight-text {
+            position: relative;
+            display: inline;
+            color: #e0e0e0;
+            font-weight: 600;
+            padding: 2px 4px;
+            transition: all 0.4s ease;
+        }
+
+        .highlight-text::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 10px;
+            background: linear-gradient(90deg, #f0e68c 0%, #dda0dd 50%, #9370db 100%);
+            opacity: 0.4;
+            z-index: -1;
+            transition: width 0.9s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .highlight-text.highlighted::after {
+            width: 100%;
+        }
+
+        .highlight-text.highlighted {
+            color: #f0e68c;
+            transform: translateY(-2px);
+            text-shadow: 0 0 10px rgba(240, 230, 140, 0.3);
+        }
+
+        /* 結局 */
+        .ending {
+            background: linear-gradient(135deg, #1a1a3e 0%, #0a0e27 100%);
+            text-align: center;
+        }
+
+        .ending h2 {
+            color: #dda0dd;
+            font-size: 3em;
+            margin-bottom: 30px;
+        }
+
+        .ending p {
+            font-size: 1.2em;
+            color: #b0b0b0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 星空背景效果 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 星空背景 -->
+    <div class="stars" id="stars"></div>
+
+    <!-- 開場 -->
+    <section class="hero">
+        <h1>午夜圖書館</h1>
+        <p>在時間停滯的深夜，有一座只對迷失者開放的圖書館</p>
+        <div class="scroll-indicator">↓ 向下探索 ↓</div>
+    </section>
+
+    <!-- 翻卡場景 -->
+    <section class="card-scene">
+        <div class="content-wrapper">
+            <div class="card-intro">
+                <h2>神秘的邀請函</h2>
+                <p>當卡片翻轉，故事便開始了...</p>
+            </div>
+
+            <div class="flip-card" data-card="1">
+                <div class="card-face card-front">
+                    <svg width="250" height="250" viewBox="0 0 250 250">
+                        <rect width="250" height="250" fill="#2d1b3d" rx="15"/>
+                        <rect x="40" y="40" width="170" height="170" fill="none" stroke="#dda0dd" stroke-width="3" rx="10"/>
+                        <circle cx="125" cy="100" r="25" fill="#f0e68c" opacity="0.7"/>
+                        <path d="M 85 150 Q 125 180 165 150" stroke="#dda0dd" stroke-width="3" fill="none"/>
+                        <text x="125" y="200" font-size="16" fill="#dda0dd" text-anchor="middle" font-family="serif">?</text>
+                    </svg>
+                </div>
+                <div class="card-face card-back">
+                    <h3>邀請函</h3>
+                    <p>「親愛的失眠者，午夜圖書館歡迎你。這裡收藏著無數未完成的故事，等待有緣人來續寫結局。」</p>
+                </div>
+            </div>
+
+            <div class="flip-card" data-card="2">
+                <div class="card-face card-front">
+                    <svg width="250" height="250" viewBox="0 0 250 250">
+                        <rect width="250" height="250" fill="#2d1b3d" rx="15"/>
+                        <rect x="70" y="60" width="110" height="140" fill="none" stroke="#f0e68c" stroke-width="3" rx="5"/>
+                        <line x1="90" y1="90" x2="160" y2="90" stroke="#dda0dd" stroke-width="2"/>
+                        <line x1="90" y1="110" x2="160" y2="110" stroke="#dda0dd" stroke-width="2"/>
+                        <line x1="90" y1="130" x2="160" y2="130" stroke="#dda0dd" stroke-width="2"/>
+                        <line x1="90" y1="150" x2="140" y2="150" stroke="#dda0dd" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="card-face card-back">
+                    <h3>古老書籍</h3>
+                    <p>書架上的書籍泛著微光，每一本都在低語著它的故事。你伸手取下了一本，封面寫著「未完待續」。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第一章 -->
+    <section class="chapter" data-chapter="1">
+        <div class="content-wrapper">
+            <h2>第一章：迷霧中的圖書館</h2>
+            <p>
+                凌晨三點,我推開了那扇<span class="highlight-text">從未在白天出現過的木門</span>。
+                門後是一座龐大的圖書館,天花板高得看不見盡頭,書架像迷宮一樣延伸到視線的極限。
+            </p>
+            <p>
+                <span class="highlight-text">每一本書都在發光</span>,淡淡的金色光芒在黑暗中跳動,
+                彷彿每個故事都有自己的心跳。空氣中瀰漫著舊紙張和墨水的香味,
+                還有一種說不清的<span class="highlight-text">時間的氣息</span>。
+            </p>
+            <div class="quote">
+                <p>
+                    「歡迎來到午夜圖書館。」一個聲音從書架後傳來,
+                    「這裡的每一本書,都是某個人<span class="highlight-text">未完成的人生</span>。」
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第二章 -->
+    <section class="chapter" data-chapter="2">
+        <div class="content-wrapper">
+            <h2>第二章：館長的秘密</h2>
+            <p>
+                館長是一位穿著深色長袍的老人,他的眼睛像是見證過<span class="highlight-text">無數個世紀</span>。
+                他告訴我,這座圖書館存在於現實與夢境的交界處,
+                只有在<span class="highlight-text">最深的夜裡</span>才會顯現。
+            </p>
+            <p>
+                「每個來到這裡的人,」館長緩緩說道,「都是因為在人生的某個路口迷失了方向。
+                這些書會告訴你,<span class="highlight-text">如果當初選擇了另一條路</span>,
+                你的人生會是什麼模樣。」
+            </p>
+            <div class="quote">
+                <p>
+                    他遞給我一本書,封面上寫著我的名字。
+                    「但要記住,」他的聲音變得嚴肅,「<span class="highlight-text">有些故事一旦翻開,就無法再合上</span>。」
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第三章 -->
+    <section class="chapter" data-chapter="3">
+        <div class="content-wrapper">
+            <h2>第三章：平行人生</h2>
+            <p>
+                我顫抖著翻開了書頁。裡面記載著另一個版本的我——
+                <span class="highlight-text">那個選擇了藝術而非商業</span>的我,
+                <span class="highlight-text">那個勇敢表白而非選擇沉默</span>的我,
+                <span class="highlight-text">那個留在家鄉而非遠走他鄉</span>的我。
+            </p>
+            <p>
+                每一頁都是一個可能的人生,有些充滿歡笑,有些飽含淚水。
+                我看到了<span class="highlight-text">不同的選擇帶來的不同結局</span>,
+                有些比現在的我更幸福,有些則更加掙扎。
+            </p>
+            <div class="quote">
+                <p>
+                    最震撼的是,每個版本的我,都在某個深夜醒來,
+                    <span class="highlight-text">懷疑自己是否做出了正確的選擇</span>。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第四章 -->
+    <section class="chapter" data-chapter="4">
+        <div class="content-wrapper">
+            <h2>第四章：真相</h2>
+            <p>
+                當我讀到最後一頁,我終於明白了。
+                <span class="highlight-text">這座圖書館不是為了展示遺憾</span>,
+                而是為了讓我們理解——<span class="highlight-text">每一個選擇都有其代價,也都有其價值</span>。
+            </p>
+            <p>
+                館長再次出現在我身旁。「你看懂了嗎?」他問。
+                我點點頭,<span class="highlight-text">淚水在眼眶中打轉</span>。
+            </p>
+            <div class="quote">
+                <p>
+                    「沒有完美的人生,」館長輕聲說,
+                    「只有<span class="highlight-text">你選擇要活的那一種人生</span>。
+                    現在,是時候回去了,回去<span class="highlight-text">珍惜你正在書寫的故事</span>。」
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 結局 -->
+    <section class="ending">
+        <div class="content-wrapper">
+            <h2>— 待續 —</h2>
+            <p>
+                當我走出圖書館,天空已經泛起魚肚白。
+                我回頭看,那扇門已經消失了。
+                但我知道,當下一次迷失的時候,它會再次出現。
+            </p>
+            <br><br>
+            <p style="font-style: italic; font-size: 0.9em; color: #888;">
+                滾動回到開始,重溫這段旅程
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // 創建星空
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 效果一：翻卡動畫
+        function checkFlipCards() {
+            const cards = document.querySelectorAll('.flip-card');
+            const windowHeight = window.innerHeight;
+            const triggerPoint = windowHeight / 2;
+
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardCenter = rect.top + rect.height / 2;
+
+                if (cardCenter < triggerPoint && cardCenter > 0) {
+                    card.classList.add('flipped');
+                } else {
+                    card.classList.remove('flipped');
+                }
+            });
+        }
+
+        // 效果二：Focus Mode
+        function checkFocusMode() {
+            const chapters = document.querySelectorAll('.chapter');
+            const windowHeight = window.innerHeight;
+
+            chapters.forEach(chapter => {
+                const rect = chapter.getBoundingClientRect();
+                const chapterBottom = rect.bottom;
+
+                if (chapterBottom < windowHeight * 0.2) {
+                    chapter.classList.add('focus-fade');
+                } else {
+                    chapter.classList.remove('focus-fade');
+                }
+            });
+        }
+
+        // 效果三：文字底線高亮
+        function checkHighlightText() {
+            const highlights = document.querySelectorAll('.highlight-text');
+            const windowHeight = window.innerHeight;
+            const triggerPoint = windowHeight * 0.6;
+
+            highlights.forEach(highlight => {
+                const rect = highlight.getBoundingClientRect();
+
+                if (rect.top < triggerPoint && rect.bottom > windowHeight * 0.1) {
+                    highlight.classList.add('highlighted');
+                } else {
+                    highlight.classList.remove('highlighted');
+                }
+            });
+        }
+
+        // 整合所有滾動監聽
+        function handleScroll() {
+            checkFlipCards();
+            checkFocusMode();
+            checkHighlightText();
+        }
+
+        // 初始化
+        createStars();
+        handleScroll();
+
+        // 滾動事件監聽
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    handleScroll();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        window.addEventListener('resize', handleScroll);
+    </script>
+</body>
+</html>
