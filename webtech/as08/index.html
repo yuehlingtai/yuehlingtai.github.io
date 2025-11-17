@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>影片專題 — 探索未知的旅程</title>
+    <style>
+        /* Reset */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html,body { height: 100%; background: #0a0a0a; color: #fff; font-family: "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing:antialiased; }
+
+        a { color: inherit; text-decoration: none; }
+
+        /* Landing */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .hero .overlay { position:absolute; inset:0; background: linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.65)); z-index:0; }
+
+        .hero .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 0 6px 18px rgba(0,0,0,0.9);
+            transition: transform .6s ease;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: #e6e6e6;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.9);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            cursor: pointer;
+            animation: bounce 2s infinite ease;
+        }
+
+        .scroll-indicator svg { width: 36px; height: 36px; fill: #ffffff; opacity: 0.95; }
+
+        @keyframes bounce {
+            0%,20%,50%,80%,100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-12px); }
+            60% { transform: translateX(-50%) translateY(-6px); }
+        }
+
+        /* Onboarding */
+        .onboarding-section {
+            min-height: 100vh;
+            background: #0a0a0a;
+            padding: 60px 5%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .onboarding-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .chapters-grid {
+            width: 100%;
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            gap: 32px;
+        }
+
+        .chapter-card {
+            background: #151515;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform .35s ease, box-shadow .35s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chapter-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 22px 48px rgba(0,0,0,0.55);
+        }
+
+        .chapter-card video {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+            background: #000;
+        }
+
+        .chapter-info {
+            padding: 20px 22px 30px 22px;
+        }
+
+        .chapter-number { color: #4a9eff; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+        .chapter-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
+        .chapter-description { color: #bdbdbd; line-height: 1.6; font-size: 1rem; }
+
+        /* Chapter sections */
+        .chapter-section {
+            position: relative;
+            height: 200vh;
+            overflow: visible;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity .8s ease;
+            pointer-events: none;
+        }
+
+        .video-background.active { opacity: 1; }
+
+        .chapter-content {
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 20vh 5%;
+        }
+
+        .chapter-header {
+            position: sticky;
+            top: 15vh;
+            align-self: stretch;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .8s ease, transform .8s ease;
+        }
+
+        .chapter-header.visible { opacity: 1; transform: translateY(0); }
+
+        .chapter-header .subtitle { color: #4a9eff; font-weight:600; margin-bottom:8px; font-size:1.1rem; }
+        .chapter-header h2 { font-size: 3.5rem; font-weight:700; text-shadow: 0 6px 18px rgba(0,0,0,0.9); }
+
+        .text-block {
+            max-width: 800px;
+            margin: 60vh auto;
+            padding: 40px;
+            background: rgba(0,0,0,0.75);
+            border-radius: 8px;
+            backdrop-filter: blur(6px);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity .8s ease, transform .8s ease;
+        }
+
+        .text-block.visible { opacity: 1; transform: translateY(0); }
+
+        .text-block p { font-size: 1.3rem; line-height: 1.8; color: #eaeaea; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1rem; }
+            .onboarding-title { font-size: 2rem; margin-bottom: 20px; }
+            .chapters-grid { grid-template-columns: 1fr; gap: 20px; }
+            .chapter-card video { height: 220px; }
+            .chapter-header h2 { font-size: 2rem; }
+            .text-block { margin: 40vh auto; padding: 28px; }
+            .text-block p { font-size: 1.05rem; }
+            .chapter-header { top: 12vh; }
+            .hero .content { padding: 0 12px; }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .hero h1 { font-size: 3rem; }
+            .chapter-header h2 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing -->
+    <section class="hero" id="hero">
+        <video class="hero-video" autoplay muted loop playsinline preload="auto">
+            <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efe827e4b0bc3a464cd99a/57fb002be4b037a240c7b2ab_1439399835595-cf9g26_t_1476067411708_1280_720_2000.mp4" type="video/mp4">
+        </video>
+        <div class="overlay"></div>
+        <div class="content">
+            <h1>探索未知的旅程</h1>
+            <p>透過影像,發現世界的每個角落</p>
+        </div>
+
+        <div class="scroll-indicator" aria-hidden="false" title="Scroll to sections">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Onboarding / Navigation -->
+    <section class="onboarding-section" id="onboarding">
+        <h2 class="onboarding-title">探索四個章節</h2>
+
+        <div class="chapters-grid">
+            <!-- Card 1 -->
+            <div class="chapter-card" data-chapter="1" role="button" tabindex="0">
+                <video muted playsinline preload="metadata" poster="">
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efe827e4b0bc3a464cd99a/57fb002be4b037a240c7b2ab_1439399835595-cf9g26_t_1476067411708_1280_720_2000.mp4" type="video/mp4">
+                </video>
+                <div class="chapter-info">
+                    <div class="chapter-number">CHAPTER 01</div>
+                    <h3 class="chapter-title">開端:啟程</h3>
+                    <p class="chapter-description">每個偉大的故事都始於一個決定,一個踏出舒適圈的勇氣。</p>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="chapter-card" data-chapter="2" role="button" tabindex="0">
+                <video muted playsinline preload="metadata" poster="">
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57effca6e4b0bc3a464cdea0/57fb0043e4b037a240c7b2ad_1439399835595-cf9g26_t_1476067421749_1280_720_2000.mp4" type="video/mp4">
+                </video>
+                <div class="chapter-info">
+                    <div class="chapter-number">CHAPTER 02</div>
+                    <h3 class="chapter-title">探索:發現</h3>
+                    <p class="chapter-description">在未知的道路上,每一步都是新的發現與學習。</p>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="chapter-card" data-chapter="3" role="button" tabindex="0">
+                <video muted playsinline preload="metadata" poster="">
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efff8ce4b0bc3a464ce0e7/57fb009de4b037a240c7b2c9_1439399835595-cf9g26_t_1476067527078_1280_720_2000.mp4" type="video/mp4">
+                </video>
+                <div class="chapter-info">
+                    <div class="chapter-number">CHAPTER 03</div>
+                    <h3 class="chapter-title">挑戰:成長</h3>
+                    <p class="chapter-description">真正的成長來自於面對挑戰時的堅持與突破。</p>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="chapter-card" data-chapter="4" role="button" tabindex="0">
+                <video muted playsinline preload="metadata" poster="">
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57f0003fe4b0bc3a464ce193/57fb0113e4b037a240c7b2e9_1439399835595-cf9g26_t_1476067636559_1280_720_2000.mp4" type="video/mp4">
+                </video>
+                <div class="chapter-info">
+                    <div class="chapter-number">CHAPTER 04</div>
+                    <h3 class="chapter-title">終章:回歸</h3>
+                    <p class="chapter-description">旅程的終點,往往是另一個開始的起點。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter 1 -->
+    <section class="chapter-section" id="chapter-1">
+        <video class="video-background" data-video="1" muted loop playsinline preload="auto">
+            <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efe827e4b0bc3a464cd99a/57fb002be4b037a240c7b2ab_1439399835595-cf9g26_t_1476067411708_1280_720_2000.mp4" type="video/mp4">
+        </video>
+
+        <div class="chapter-content">
+            <div class="chapter-header">
+                <div class="subtitle">CHAPTER 01</div>
+                <h2>開端:啟程</h2>
+            </div>
+
+            <div class="text-block"><p>當第一道曙光照進窗櫺,我們知道是時候踏上旅程了。這不僅僅是一次地理上的移動,更是心靈的探索。</p></div>
+            <div class="text-block"><p>準備行囊的過程中,每一件物品都承載著期待與不安。我們試圖預見未來,卻又清楚地知道,最美好的風景總是出乎意料。</p></div>
+            <div class="text-block"><p>出發的那一刻,回望熟悉的街道,心中湧起複雜的情緒。但我們明白,只有離開,才能真正認識自己。</p></div>
+        </div>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section class="chapter-section" id="chapter-2">
+        <video class="video-background" data-video="2" muted loop playsinline preload="auto">
+            <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57effca6e4b0bc3a464cdea0/57fb0043e4b037a240c7b2ad_1439399835595-cf9g26_t_1476067421749_1280_720_2000.mp4" type="video/mp4">
+        </video>
+
+        <div class="chapter-content">
+            <div class="chapter-header">
+                <div class="subtitle">CHAPTER 02</div>
+                <h2>探索:發現</h2>
+            </div>
+
+            <div class="text-block"><p>陌生的城市、陌生的語言、陌生的面孔。一開始的不適應,逐漸轉化為好奇與興奮。</p></div>
+            <div class="text-block"><p>在市集中穿梭,品嚐從未嘗過的食物;在小巷裡迷路,卻發現最動人的風景。每一次轉角,都是一個驚喜。</p></div>
+            <div class="text-block"><p>與當地人的交流,雖然語言不通,但笑容和善意是共通的語言。我們開始理解,世界比想像中更溫暖。</p></div>
+        </div>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section class="chapter-section" id="chapter-3">
+        <video class="video-background" data-video="3" muted loop playsinline preload="auto">
+            <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efff8ce4b0bc3a464ce0e7/57fb009de4b037a240c7b2c9_1439399835595-cf9g26_t_1476067527078_1280_720_2000.mp4" type="video/mp4">
+        </video>
+
+        <div class="chapter-content">
+            <div class="chapter-header">
+                <div class="subtitle">CHAPTER 03</div>
+                <h2>挑戰:成長</h2>
+            </div>
+
+            <div class="text-block"><p>旅程並非一帆風順。迷路、錯過班車、語言障礙⋯⋯每一個困難都是一次考驗。</p></div>
+            <div class="text-block"><p>但正是這些挑戰,讓我們學會獨立解決問題,學會在壓力下保持冷靜。我們發現自己比想像中更堅強。</p></div>
+            <div class="text-block"><p>夜晚在陌生的旅館裡,回想這一天的經歷，疲憊中帶著滿足。我們知道,這些經驗將成為生命中最寶貴的財富。</p></div>
+        </div>
+    </section>
+
+    <!-- Chapter 4 -->
+    <section class="chapter-section" id="chapter-4">
+        <video class="video-background" data-video="4" muted loop playsinline preload="auto">
+            <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57f0003fe4b0bc3a464ce193/57fb0113e4b037a240c7b2e9_1439399835595-cf9g26_t_1476067636559_1280_720_2000.mp4" type="video/mp4">
+        </video>
+
+        <div class="chapter-content">
+            <div class="chapter-header">
+                <div class="subtitle">CHAPTER 04</div>
+                <h2>終章:回歸</h2>
+            </div>
+
+            <div class="text-block"><p>當飛機降落在熟悉的機場,我們驚訝地發現,一切似乎都沒變,但自己已經不同了。</p></div>
+            <div class="text-block"><p>旅行帶給我們的不只是照片和紀念品,更是一種新的視野。我們學會欣賞差異,理解多元,並對世界充滿好奇。</p></div>
+            <div class="text-block"><p>回到日常生活,那些旅途中的記憶成為我們前進的動力。我們知道,這不是結束,而是下一段旅程的開始。</p></div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Observer for headers and text blocks
+            const revealOptions = { threshold: 0.3, rootMargin: '0px' };
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, revealOptions);
+
+            document.querySelectorAll('.text-block, .chapter-header').forEach(el => revealObserver.observe(el));
+
+            // Section observer to switch background videos
+            const sectionOptions = { threshold: 0.5 };
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const section = entry.target;
+                        const activeVid = section.querySelector('.video-background');
+
+                        document.querySelectorAll('.video-background').forEach(v => {
+                            if (v === activeVid) {
+                                v.classList.add('active');
+                                // try to play; browsers allow muted autoplay usually
+                                v.play().catch(()=>{ /* ignore play error */ });
+                            } else {
+                                v.classList.remove('active');
+                                try { v.pause(); v.currentTime = 0; } catch(e){}
+                            }
+                        });
+                    }
+                });
+            }, sectionOptions);
+
+            document.querySelectorAll('.chapter-section').forEach(sec => sectionObserver.observe(sec));
+
+            // Chapter card interactions
+            document.querySelectorAll('.chapter-card').forEach(card => {
+                const vid = card.querySelector('video');
+
+                // hover/touchstart play
+                card.addEventListener('mouseenter', () => { vid.play().catch(()=>{}); });
+                card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+
+                // Accessible keyboard activation
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+
+                // click to scroll to chapter
+                card.addEventListener('click', () => {
+                    const num = card.dataset.chapter;
+                    const target = document.getElementById(`chapter-${num}`);
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                });
+
+                // On touch devices: play on touchstart, stop on touchend
+                card.addEventListener('touchstart', () => { vid.play().catch(()=>{}); }, {passive:true});
+                card.addEventListener('touchend', () => { vid.pause(); vid.currentTime = 0; });
+            });
+
+            // Scroll indicator -> onboarding
+            const arrow = document.querySelector('.scroll-indicator');
+            if (arrow) {
+                arrow.addEventListener('click', () => {
+                    const onb = document.getElementById('onboarding');
+                    if (onb) onb.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+
+            // Optional: ensure only one background video playing on load if first section visible
+            // trigger a check
+            document.querySelectorAll('.chapter-section').forEach(sec => {
+                const rect = sec.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > window.innerHeight/2) {
+                    // let observer handle it; intersection observer will update shortly
+                }
+            });
+
+            // Improve experience: pause hero video when user scrolls away from top (optional)
+            const heroVideo = document.querySelector('.hero-video');
+            if (heroVideo) {
+                let heroPaused = false;
+                const checkHero = () => {
+                    if (window.scrollY > window.innerHeight * 0.5) {
+                        if (!heroVideo.paused) { heroVideo.pause(); heroPaused = true; }
+                    } else if (heroPaused) {
+                        heroVideo.play().catch(()=>{});
+                        heroPaused = false;
+                    }
+                };
+                window.addEventListener('scroll', throttle(checkHero, 150));
+                // throttle helper
+                function throttle(fn, wait) {
+                    let t = null;
+                    return (...args) => {
+                        if (!t) {
+                            fn.apply(this, args);
+                            t = setTimeout(() => t = null, wait);
+                        }
+                    };
+                }
+            }
+        });
+    </script>
+</body>
+</html>
