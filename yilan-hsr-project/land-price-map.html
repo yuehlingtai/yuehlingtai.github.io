@@ -107,11 +107,9 @@
         // 中心點設在這四個點的中間位置 (約 24.732, 121.766)
         const map = L.map('map').setView([24.732, 121.766], 14);
 
-// 選項 B：清楚明亮版 (Voyager)
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 20
+        // 2. 載入圖資 (使用 OpenStreetMap，免費)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
         // 3. 定義數據 (已更新為您的精確座標)
