@@ -33,10 +33,7 @@
             width: 100%;
         }
 
-        /* 第一幕專用：超長高度 */
-        .hero-section {
-            height: 300vh; 
-        }
+        .hero-section { height: 300vh; }
 
         .sticky-background {
             position: sticky;
@@ -54,7 +51,15 @@
             filter: brightness(0.6); 
         }
 
-        /* 內容層 */
+        /* 地圖專用的 sticky iframe 樣式 */
+        .sticky-map-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            /* 地圖需要互動，所以要確保它能接收滑鼠事件 */
+            pointer-events: auto; 
+        }
+
         .scrolling-content {
             position: relative;
             z-index: 1;
@@ -62,7 +67,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            pointer-events: none; 
+            pointer-events: none; /* 讓滑鼠穿透，不要擋住背景互動 */
         }
 
         /* --- 封面標題特效 --- */
@@ -112,10 +117,7 @@
             gap: 8px;
             transition: all 0.3s;
         }
-        .sound-btn:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: white;
-        }
+        .sound-btn:hover { background: rgba(255,255,255,0.2); border-color: white; }
 
         /* --- 文字卡片 --- */
         .text-card {
@@ -128,12 +130,25 @@
             border-left: 4px solid var(--accent);
             margin-bottom: 60vh; 
             pointer-events: auto; 
-            
             opacity: 0;
             transform: translateY(30px);
             animation: fadeUp 0.8s forwards;
             animation-timeline: view();
             animation-range: entry 5% cover 25%;
+        }
+
+        /* --- 地圖提示框 (浮在地圖下方) --- */
+        .map-hint-card {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.3);
+            margin-top: 80vh; /* 讓它一開始在下面，滑上來 */
+            margin-bottom: 80vh; /* 讓地圖多停留一會 */
+            pointer-events: auto;
+            text-align: center;
+            backdrop-filter: blur(5px);
         }
 
         .embed-container {
@@ -144,6 +159,7 @@
             margin: 20px 0;
         }
         
+        /* 一般內嵌 iframe */
         iframe {
             width: 100%;
             border: none;
@@ -151,26 +167,9 @@
             border-radius: 4px; 
         }
 
-        .full-screen-map {
-            width: 100vw;
-            height: 100vh;
-            position: sticky;
-            top: 0;
-            z-index: 5;
-        }
-
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-10px);}
-            60% {transform: translateY(-5px);}
-        }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
         @media (max-width: 768px) {
             .main-title { font-size: 2.5rem; }
@@ -182,15 +181,12 @@
 <body>
 
     <section id="hero" class="scrolly-section hero-section">
-        
         <div class="sticky-background">
-            
-        <video id="heroVideo" class="bg-video" autoplay muted loop playsinline 
-            preload="auto" fetchpriority="high"
-            poster="https://images.unsplash.com/photo-1474487548417-781cb714c22d?q=80&w=2070">
-            <source src="my-train.mp4" type="video/mp4">
-        </video>
-
+            <video id="heroVideo" class="bg-video" autoplay muted loop playsinline 
+                   preload="auto" fetchpriority="high"
+                   poster="https://images.unsplash.com/photo-1474487548417-781cb714c22d?q=80&w=2070">
+                <source src="my-train.mp4" type="video/mp4">
+            </video>
         </div>
 
         <div class="header-sticky-wrapper">
@@ -199,15 +195,12 @@
                 <div style="background: var(--accent); padding: 5px 20px; font-size: 1.2rem; font-weight: bold;">
                     宜蘭高鐵這帖藥，治的是交通還是炒房？
                 </div>
-                
                 <p style="margin-top: 30px; opacity: 0.9; font-size: 1rem;">
-                    記者：戴悦鈴、楊佳蓁、張童寧 ｜ 2025 報導
+                    文字：戴悦鈴、楊同學、張同學 ｜ 2025 深度報導
                 </p>
-
                 <button class="sound-btn" onclick="toggleSound()">
                     <span id="soundIcon">🔇</span> <span id="soundText">開啟現場音效</span>
                 </button>
-
                 <div style="margin-top: 80px; animation: bounce 2s infinite; font-size: 1.5rem; opacity: 0.7;">⬇</div>
             </div>
         </div>
@@ -215,7 +208,6 @@
 
 
     <section class="scrolly-section">
-        
         <div class="sticky-background">
             <video class="bg-video" autoplay muted loop playsinline>
                 <source src="https://videos.pexels.com/video-files/2103099/2103099-hd_1920_1080_30fps.mp4" type="video/mp4">
@@ -223,7 +215,6 @@
         </div>
 
         <div class="scrolling-content" style="padding-top: 30vh;">
-            
             <div class="text-card">
                 <p><b>【引言】 1800 億的豪賭</b></p>
                 <p>宜蘭人盼了二十年，終於盼到高鐵延伸。官方宣稱這是打通東部任督二脈的萬靈丹，既能解決塞車，又能帶動科學園區。但在美好的藍圖下，這是不是一場「藥不對症」的豪賭？</p>
@@ -234,28 +225,23 @@
                 <br>
                 <h3>Q1：高鐵進場，台鐵退場？</h3>
                 <p>採訪台鐵工會理事後發現，高鐵搶走高價值的長途客源後，台鐵勢必減班或轉型。對於付不起高鐵票的在地通勤族，交通權益是否反而受損？</p>
-                
                 <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 30px 0;">
-
                 <h3 style="text-align: center; color: var(--accent);">👇 您的選擇會是什麼？</h3>
                 <div class="embed-container">
                     <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/transport-poll.html" height="600"></iframe>
                 </div>
             </div>
-
         </div>
     </section>
 
 
     <section class="scrolly-section">
-        
         <div class="sticky-background">
             <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop" 
                  class="bg-video" style="object-position: center bottom;">
         </div>
 
         <div class="scrolling-content">
-            
             <div class="text-card">
                 <h2>Part 2. 土地的算盤</h2>
                 <p>建設是為了交通還是房地產？選址在縣政中心，是為了交通轉乘便利，還是為了炒熱周邊荒涼的重劃區？</p>
@@ -272,25 +258,30 @@
                     <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/land-price-chart.html" height="580"></iframe>
                 </div>
             </div>
-
         </div>
     </section>
 
 
-    <div style="position: relative; z-index: 10; border-top: 5px solid var(--accent); border-bottom: 5px solid var(--accent);">
-        <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/land-price-map.html" 
-                style="width: 100%; height: 100vh; border: none; display: block;"></iframe>
+    <section class="scrolly-section" style="z-index: 10;">
         
-        <div style="position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); 
-                    background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 30px; 
-                    pointer-events: none; border: 1px solid rgba(255,255,255,0.3);">
-            ☝️ 請試著點擊地圖上的紅點
+        <div class="sticky-background">
+            <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/land-price-map.html" 
+                    class="sticky-map-iframe"></iframe>
         </div>
-    </div>
+
+        <div class="scrolling-content">
+            <div class="map-hint-card">
+                <h3>☝️ 地價風暴地圖</h3>
+                <p style="margin: 0; font-size: 0.95rem;">
+                    請點擊地圖上的紅點，查看 110年與 111年的漲幅。<br>
+                    (繼續往下滑動以閱讀下一章)
+                </p>
+            </div>
+        </div>
+    </section>
 
 
     <section class="scrolly-section">
-        
         <div class="sticky-background">
             <video class="bg-video" autoplay muted loop playsinline>
                 <source src="https://videos.pexels.com/video-files/2835307/2835307-hd_1920_1080_30fps.mp4" type="video/mp4">
@@ -298,7 +289,6 @@
         </div>
 
         <div class="scrolling-content">
-            
             <div class="text-card">
                 <h2>Part 3. 土地的迷思</h2>
                 <p>如果連舊的縣政中心都填不滿，高鐵帶來的這個「新特區」，會不會只是把泡沫吹得更大？</p>
@@ -327,18 +317,17 @@
             var btnIcon = document.getElementById("soundIcon");
 
             if (video.muted) {
-                video.muted = false; // 開聲音
+                video.muted = false; 
                 video.volume = 1.0;
                 btnText.innerText = "音效已開啟";
                 btnIcon.innerText = "🔊";
             } else {
-                video.muted = true; // 靜音
+                video.muted = true; 
                 btnText.innerText = "開啟現場音效";
                 btnIcon.innerText = "🔇";
             }
         }
 
-        // --- 自動偵測：離開第一幕就自動靜音 ---
         document.addEventListener('DOMContentLoaded', () => {
             const heroSection = document.getElementById('hero');
             const video = document.getElementById('heroVideo');
@@ -347,16 +336,13 @@
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    // 如果第一幕「完全離開」了視窗
                     if (!entry.isIntersecting) {
-                        // 強制靜音
                         video.muted = true;
-                        // 恢復按鈕狀態
                         btnText.innerText = "開啟現場音效";
                         btnIcon.innerText = "🔇";
                     }
                 });
-            }, { threshold: 0.1 }); // 只要剩 10% 可見度時就觸發
+            }, { threshold: 0.1 });
 
             observer.observe(heroSection);
         });
