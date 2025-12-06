@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宜蘭交通行為大調查</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --highlight: #e63946; /* 宜蘭紅 */
+            --bg: #f8f9fa;
+            --bar-bg: #e9ecef;
+        }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background: var(--bg);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .poll-container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h2 { text-align: center; color: var(--primary); margin-bottom: 10px; }
+        p.intro { text-align: center; color: #666; margin-bottom: 40px; }
+
+        /* 兩個問題的區塊 */
+        .poll-section {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px dashed #ddd;
+        }
+        .poll-section:last-child { border-bottom: none; }
+
+        .question-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+        .badge.future { background: var(--highlight); }
+
+        /* 選項按鈕區域 */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 手機版改1欄 */
+            gap: 15px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1em;
+            color: #444;
+        }
+
+        .option-btn:hover {
+            border-color: #aaa;
+            background: #fdfdfd;
+            transform: translateY(-2px);
+        }
+
+        .icon { font-size: 1.5em; }
+
+        /* --- 結果條區域 (預設隱藏) --- */
+        .results-area {
+            display: none; /* 投票後才顯示 */
+            margin-top: 20px;
+        }
+
+        .result-item { margin-bottom: 15px; }
+        
+        .result-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: var(--bar-bg);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%; /* JS控制 */
+            border-radius: 10px;
+            transition: width 1s ease-out;
+        }
+
+        /* 讓高鐵的 Bar 特別明顯 */
+        .progress-bar-fill.hsr-fill { background: var(--highlight); }
+
+        .total-votes {
+            text-align: right;
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="poll-container">
+    <h2>宜蘭交通大調查</h2>
+    <p class="intro">你的選擇，決定了高鐵是真的有用，還是蚊子建設。</p>
+
+    <div class="poll-section" id="poll-now">
+        <div class="question-title">
+            <span class="badge">現在</span> Q1：你目前去宜蘭，最常使用什麼交通工具？
+        </div>
+
+        <div class="options-grid" id="options-now">
+            <button class="option-btn" onclick="vote('now', 'car')">
+                <span class="icon">🚗</span> 開車 (國道五號)
+            </button>
+            <button class="option-btn" onclick="vote('now', 'bus')">
+                <span class="icon">🚌</span> 客運 (葛瑪蘭/首都)
+            </button>
+            <button class="option-btn" onclick="vote('now', 'train')">
+                <span class="icon">🚆</span> 台鐵 (普悠瑪/區間)
+            </button>
+            <button class="option-btn" onclick="vote('now', 'other')">
+                <span class="icon">🛵</span> 其他 (機車/共乘)
+            </button>
+        </div>
+
+        <div class="results-area" id="results-now">
+            </div>
+    </div>
+
+    <div class="poll-section" id="poll-future">
+        <div class="question-title">
+            <span class="badge future">10年後</span> Q2：高鐵通車後，你「真的」會改搭高鐵嗎？
+        </div>
+
+        <div class="options-grid" id="options-future">
+            <button class="option-btn" onclick="vote('future', 'hsr')">
+                <span class="icon">🚄</span> 會！改搭高鐵 (單程約300元)
+            </button>
+            <button class="option-btn" onclick="vote('future', 'car')">
+                <span class="icon">🚗</span> 不會，繼續開車 (比較方便)
+            </button>
+            <button class="option-btn" onclick="vote('future', 'train')">
+                <span class="icon">🚆</span> 不會，繼續搭台鐵 (比較便宜)
+            </button>
+            <button class="option-btn" onclick="vote('future', 'bus')">
+                <span class="icon">🚌</span> 不會，繼續搭客運 (點對點方便)
+            </button>
+        </div>
+
+        <div class="results-area" id="results-future">
+            </div>
+    </div>
+
+</div>
+
+<script>
+    // --- 1. 預設的模擬數據 (Mock Data) ---
+    // 這些數字是為了讓圖表一開始看起來有東西，不要是0
+    // 你可以根據這幾天的採訪感覺，自己調整這些「基底數字」
+    const initialData = {
+        now: {
+            car: 320,   // 開車最多
+            bus: 150,   // 客運次之
+            train: 80,  // 台鐵
+            other: 20
+        },
+        future: {
+            hsr: 210,   // 高鐵吸走一部分
+            car: 200,   // 開車還是很多
+            train: 40,  // 台鐵變少
+            bus: 120    // 客運變少
+        }
+    };
+
+    // --- 2. 檢查使用者是否投過票 ---
+    // 讀取 localStorage，如果沒有資料，就用上面的預設值
+    let voteData = JSON.parse(localStorage.getItem('yilan_poll_data')) || initialData;
+    let userVoted = JSON.parse(localStorage.getItem('yilan_user_voted')) || { now: false, future: false };
+
+    // 初始化：如果使用者已經投過，直接顯示結果
+    if (userVoted.now) showResults('now');
+    if (userVoted.future) showResults('future');
+
+    // --- 3. 投票功能 ---
+    function vote(type, choice) {
+        // 更新數據
+        voteData[type][choice]++;
+        
+        // 標記使用者已投過該題
+        userVoted[type] = true;
+
+        // 儲存到瀏覽器 (假裝存到資料庫)
+        localStorage.setItem('yilan_poll_data', JSON.stringify(voteData));
+        localStorage.setItem('yilan_user_voted', JSON.stringify(userVoted));
+
+        // 顯示結果
+        showResults(type);
+    }
+
+    // --- 4. 顯示結果並畫圖 ---
+    function showResults(type) {
+        // 隱藏按鈕，顯示結果區
+        document.getElementById(`options-${type}`).style.display = 'none';
+        const resultDiv = document.getElementById(`results-${type}`);
+        resultDiv.style.display = 'block';
+
+        // 計算總票數
+        const total = Object.values(voteData[type]).reduce((a, b) => a + b, 0);
+
+        // 準備選項的中文標籤
+        const labels = {
+            now: { car: "開車", bus: "客運", train: "台鐵", other: "其他" },
+            future: { hsr: "改搭高鐵", car: "繼續開車", train: "繼續台鐵", bus: "繼續客運" }
+        };
+
+        // 產生 HTML
+        let html = '';
+        // 排序：票數高的在上面
+        const sortedKeys = Object.keys(voteData[type]).sort((a,b) => voteData[type][b] - voteData[type][a]);
+
+        sortedKeys.forEach(key => {
+            const count = voteData[type][key];
+            const percent = Math.round((count / total) * 100);
+            
+            // 特別標記高鐵的 bar 顏色
+            const specialClass = (key === 'hsr') ? 'hsr-fill' : '';
+            // 特別標記開車的 icon
+            const icon = getIcon(key);
+
+            html += `
+                <div class="result-item">
+                    <div class="result-label">
+                        <span>${icon} ${labels[type][key]}</span>
+                        <span>${percent}% (${count}票)</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill ${specialClass}" style="width: 0%" data-width="${percent}%"></div>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `<div class="total-votes">累積參與人數：${total} 人</div>`;
+        
+        // 如果是未來題，加一句點評
+        if(type === 'future' && total > 0) {
+             html += `<p style="text-align:center; font-size:0.9em; color:#e63946; margin-top:15px; font-weight:bold;">
+                發現了嗎？即使高鐵蓋好，選擇「繼續開車」的人依然佔多數。<br>國五塞車問題，真的能解決嗎？
+             </p>`;
+        }
+
+        resultDiv.innerHTML = html;
+
+        // 觸發動畫 (稍微延遲確保 DOM 已生成)
+        setTimeout(() => {
+            const bars = resultDiv.querySelectorAll('.progress-bar-fill');
+            bars.forEach(bar => {
+                bar.style.width = bar.getAttribute('data-width');
+            });
+        }, 50);
+    }
+
+    function getIcon(key) {
+        if(key === 'car') return '🚗';
+        if(key === 'bus') return '🚌';
+        if(key === 'train') return '🚆';
+        if(key === 'hsr') return '🚄';
+        return '🛵';
+    }
+
+</script>
+
+</body>
+</html>
