@@ -104,8 +104,12 @@
 
     <script>
         // 1. 初始化地圖
-        // 中心點設在這四個點的中間位置 (約 24.732, 121.766)
-        const map = L.map('map').setView([24.732, 121.766], 14);
+        // 加入 scrollWheelZoom: false，讓使用者捲動頁面時不會被地圖卡住
+        const map = L.map('map', {
+            scrollWheelZoom: false, // 🔥 關鍵修正
+            dragging: !L.Browser.mobile, // (選用) 手機版也建議禁止拖曳，避免手指滑不動頁面
+            tap: !L.Browser.mobile
+        }).setView([24.732, 121.766], 14);
 
         // 2. 載入圖資 (使用 OpenStreetMap，免費)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
