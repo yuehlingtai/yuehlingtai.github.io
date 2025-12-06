@@ -191,77 +191,112 @@
 </div>
 
 <script>
-    // --- 1. 預設的模擬數據 (Mock Data) ---
-    // 這些數字是為了讓圖表一開始看起來有東西，不要是0
-    // 你可以根據這幾天的採訪感覺，自己調整這些「基底數字」
-    const initialData = {
-        now: {
-            car: 320,   // 開車最多
-            bus: 150,   // 客運次之
-            train: 80,  // 台鐵
-            other: 20
-        },
-        future: {
-            hsr: 210,   // 高鐵吸走一部分
-            car: 200,   // 開車還是很多
-            train: 40,  // 台鐵變少
-            bus: 120    // 客運變少
-        }
-    };
+    // 🔥 重要：請將這裡換成你剛剛複製的 Google Web App URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbwmErIJextowSH0MU-my-28EH1Uc0P1Af96iNYP16XAxjH8sVwZ9mW4HnML7BgdkdmP/exec"; 
 
-    // --- 2. 檢查使用者是否投過票 ---
-    // 讀取 localStorage，如果沒有資料，就用上面的預設值
-    let voteData = JSON.parse(localStorage.getItem('yilan_poll_data')) || initialData;
+    // 檢查本地是否投過 (這只為了防止同一個人重複一直按，不影響數據累積)
     let userVoted = JSON.parse(localStorage.getItem('yilan_user_voted')) || { now: false, future: false };
 
-    // 初始化：如果使用者已經投過，直接顯示結果
-    if (userVoted.now) showResults('now');
-    if (userVoted.future) showResults('future');
+    // 頁面載入時，先去雲端抓取最新票數
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchVotes();
+        // 如果使用者投過了，顯示結果
+        if (userVoted.now) showResultsUI('now');
+        if (userVoted.future) showResultsUI('future');
+    });
 
-    // --- 3. 投票功能 ---
-    function vote(type, choice) {
-        // 更新數據
-        voteData[type][choice]++;
-        
-        // 標記使用者已投過該題
-        userVoted[type] = true;
+    let currentData = {}; // 暫存抓下來的資料
 
-        // 儲存到瀏覽器 (假裝存到資料庫)
-        localStorage.setItem('yilan_poll_data', JSON.stringify(voteData));
-        localStorage.setItem('yilan_user_voted', JSON.stringify(userVoted));
-
-        // 顯示結果
-        showResults(type);
+    // 1. 從 Google Sheet 抓取資料
+    function fetchVotes() {
+        fetch(API_URL + "?action=get")
+            .then(response => response.json())
+            .then(data => {
+                console.log("數據更新成功", data);
+                currentData = formatData(data);
+                // 如果已經在顯示結果畫面，要即時更新圖表
+                if (userVoted.now) updateCharts('now');
+                if (userVoted.future) updateCharts('future');
+            })
+            .catch(error => console.error('Error:', error));
     }
 
-    // --- 4. 顯示結果並畫圖 ---
-    function showResults(type) {
-        // 隱藏按鈕，顯示結果區
+    // 2. 投票動作
+    function vote(type, choice) {
+        // 組合 ID，例如 future_hsr
+        const voteId = type + "_" + choice;
+
+        // 顯示讀取中... (因為連線需要1-2秒)
+        const btnArea = document.getElementById(`options-${type}`);
+        btnArea.style.opacity = '0.5';
+        btnArea.style.pointerEvents = 'none'; // 禁止連點
+
+        // 傳送投票請求到 Google Sheet
+        fetch(API_URL + "?action=vote&id=" + voteId, { method: "POST" })
+            .then(response => response.json())
+            .then(data => {
+                // 更新數據
+                currentData = formatData(data);
+                
+                // 記錄已投票
+                userVoted[type] = true;
+                localStorage.setItem('yilan_user_voted', JSON.stringify(userVoted));
+
+                // 切換介面
+                showResultsUI(type);
+                updateCharts(type);
+            })
+            .catch(error => {
+                alert("投票連線失敗，請稍後再試！");
+                console.error(error);
+                btnArea.style.opacity = '1';
+                btnArea.style.pointerEvents = 'auto';
+            });
+    }
+
+    // 輔助：將 Google Sheet 的平面資料轉回我們需要的巢狀格式
+    function formatData(flatData) {
+        return {
+            now: {
+                car: flatData['now_car'],
+                bus: flatData['now_bus'],
+                train: flatData['now_train'],
+                other: flatData['now_other']
+            },
+            future: {
+                hsr: flatData['future_hsr'],
+                car: flatData['future_car'],
+                train: flatData['future_train'],
+                bus: flatData['future_bus']
+            }
+        };
+    }
+
+    // 介面切換：隱藏按鈕，顯示結果區
+    function showResultsUI(type) {
         document.getElementById(`options-${type}`).style.display = 'none';
+        document.getElementById(`results-${type}`).style.display = 'block';
+    }
+
+    // 畫圖表
+    function updateCharts(type) {
+        if (!currentData[type]) return;
+
         const resultDiv = document.getElementById(`results-${type}`);
-        resultDiv.style.display = 'block';
-
-        // 計算總票數
-        const total = Object.values(voteData[type]).reduce((a, b) => a + b, 0);
-
-        // 準備選項的中文標籤
+        const total = Object.values(currentData[type]).reduce((a, b) => a + b, 0);
+        
         const labels = {
             now: { car: "開車", bus: "客運", train: "台鐵", other: "其他" },
             future: { hsr: "改搭高鐵", car: "繼續開車", train: "繼續台鐵", bus: "繼續客運" }
         };
 
-        // 產生 HTML
+        const sortedKeys = Object.keys(currentData[type]).sort((a,b) => currentData[type][b] - currentData[type][a]);
+        
         let html = '';
-        // 排序：票數高的在上面
-        const sortedKeys = Object.keys(voteData[type]).sort((a,b) => voteData[type][b] - voteData[type][a]);
-
         sortedKeys.forEach(key => {
-            const count = voteData[type][key];
-            const percent = Math.round((count / total) * 100);
-            
-            // 特別標記高鐵的 bar 顏色
+            const count = currentData[type][key];
+            const percent = total === 0 ? 0 : Math.round((count / total) * 100);
             const specialClass = (key === 'hsr') ? 'hsr-fill' : '';
-            // 特別標記開車的 icon
             const icon = getIcon(key);
 
             html += `
@@ -271,7 +306,7 @@
                         <span>${percent}% (${count}票)</span>
                     </div>
                     <div class="progress-bar-bg">
-                        <div class="progress-bar-fill ${specialClass}" style="width: 0%" data-width="${percent}%"></div>
+                        <div class="progress-bar-fill ${specialClass}" style="width: ${percent}%"></div>
                     </div>
                 </div>
             `;
@@ -279,7 +314,6 @@
 
         html += `<div class="total-votes">累積參與人數：${total} 人</div>`;
         
-        // 如果是未來題，加一句點評
         if(type === 'future' && total > 0) {
              html += `<p style="text-align:center; font-size:0.9em; color:#e63946; margin-top:15px; font-weight:bold;">
                 發現了嗎？即使高鐵蓋好，選擇「繼續開車」的人依然佔多數。<br>國五塞車問題，真的能解決嗎？
@@ -287,14 +321,6 @@
         }
 
         resultDiv.innerHTML = html;
-
-        // 觸發動畫 (稍微延遲確保 DOM 已生成)
-        setTimeout(() => {
-            const bars = resultDiv.querySelectorAll('.progress-bar-fill');
-            bars.forEach(bar => {
-                bar.style.width = bar.getAttribute('data-width');
-            });
-        }, 50);
     }
 
     function getIcon(key) {
@@ -304,7 +330,6 @@
         if(key === 'hsr') return '🚄';
         return '🛵';
     }
-
 </script>
 
 </body>
