@@ -32,7 +32,7 @@
         h2 { text-align: center; color: var(--primary); margin-bottom: 10px; }
         p.intro { text-align: center; color: #666; margin-bottom: 40px; }
 
-        /* 兩個問題的區塊 */
+        /* 區塊樣式 */
         .poll-section {
             margin-bottom: 50px;
             padding-bottom: 30px;
@@ -57,10 +57,10 @@
         }
         .badge.future { background: var(--highlight); }
 
-        /* 選項按鈕區域 */
+        /* 按鈕區域 */
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 手機版改1欄 */
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
 
@@ -87,9 +87,9 @@
 
         .icon { font-size: 1.5em; }
 
-        /* --- 結果條區域 (預設隱藏) --- */
+        /* 結果區域 */
         .results-area {
-            display: none; /* 投票後才顯示 */
+            display: none;
             margin-top: 20px;
         }
 
@@ -114,12 +114,11 @@
         .progress-bar-fill {
             height: 100%;
             background: var(--primary);
-            width: 0%; /* JS控制 */
+            width: 0%;
             border-radius: 10px;
             transition: width 1s ease-out;
         }
 
-        /* 讓高鐵的 Bar 特別明顯 */
         .progress-bar-fill.hsr-fill { background: var(--highlight); }
 
         .total-votes {
@@ -160,8 +159,7 @@
             </button>
         </div>
 
-        <div class="results-area" id="results-now">
-            </div>
+        <div class="results-area" id="results-now"></div>
     </div>
 
     <div class="poll-section" id="poll-future">
@@ -184,73 +182,76 @@
             </button>
         </div>
 
-        <div class="results-area" id="results-future">
-            </div>
+        <div class="results-area" id="results-future"></div>
     </div>
 
 </div>
 
 <script>
-    // 🔥 重要：請將這裡換成你剛剛複製的 Google Web App URL
+    // 🔥🔥🔥 請務必確認這裡是你最新的 Google Apps Script 網址 🔥🔥🔥
     const API_URL = "https://script.google.com/macros/s/AKfycbx0VMZt4giDNu0m4HzzPtDVgAfcgKkCtyhYk25PSHV9tJYHK-ZyXrigVfvUYy-qoPHO/exec"; 
 
-    // 檢查本地是否投過 (這只為了防止同一個人重複一直按，不影響數據累積)
+    // 檢查本地是否投過
     let userVoted = JSON.parse(localStorage.getItem('yilan_user_voted')) || { now: false, future: false };
+    let currentData = {}; 
 
     // 頁面載入時，先去雲端抓取最新票數
     document.addEventListener('DOMContentLoaded', () => {
         fetchVotes();
-        // 如果使用者投過了，顯示結果
         if (userVoted.now) showResultsUI('now');
         if (userVoted.future) showResultsUI('future');
     });
 
-    let currentData = {}; // 暫存抓下來的資料
-
-    // 1. 從 Google Sheet 抓取資料
+    // 1. 從 Google Sheet 抓取資料 (GET)
     function fetchVotes() {
-        // 加上 &t=時間戳記 防止瀏覽器快取舊資料
         const url = API_URL + "?action=get&t=" + new Date().getTime();
         
-        fetch(url, { method: "GET" }) // 明確指定 GET
+        fetch(url, { method: "GET" })
             .then(response => response.json())
             .then(data => {
-                // 如果後端回傳錯誤訊息
                 if(data.status === "error") {
-                    console.error("後端錯誤:", data.message);
+                    console.error("後端回傳錯誤:", data.message);
                     return;
                 }
                 console.log("數據更新成功", data);
+                
+                // 轉格式
                 currentData = formatData(data);
+                
+                // 更新圖表
                 if (userVoted.now) updateCharts('now');
                 if (userVoted.future) updateCharts('future');
             })
             .catch(error => console.error('連線錯誤:', error));
     }
 
-    // 2. 投票動作
+    // 2. 投票動作 (GET)
     function vote(type, choice) {
         const voteId = type + "_" + choice;
         const btnArea = document.getElementById(`options-${type}`);
+        
+        // 暫時鎖定按鈕避免連點
         btnArea.style.opacity = '0.5';
         btnArea.style.pointerEvents = 'none';
 
-        // 加上 &t=時間戳記
         const url = API_URL + "?action=vote&id=" + voteId + "&t=" + new Date().getTime();
 
-        fetch(url, { method: "GET" }) // 明確指定 GET
+        fetch(url, { method: "GET" })
             .then(response => response.json())
             .then(data => {
                 if(data.status === "error") {
-                    alert("系統錯誤: " + data.message); // 跳出具體錯誤原因
+                    alert("系統錯誤: " + data.message);
                     btnArea.style.opacity = '1';
                     btnArea.style.pointerEvents = 'auto';
                     return;
                 }
                 
+                // 更新數據與狀態
                 currentData = formatData(data);
                 userVoted[type] = true;
                 localStorage.setItem('yilan_user_voted', JSON.stringify(userVoted));
+                
+                // 顯示結果
                 showResultsUI(type);
                 updateCharts(type);
             })
@@ -262,13 +263,31 @@
             });
     }
 
-    // 介面切換：隱藏按鈕，顯示結果區
+    // 3. 資料格式轉換函式 (重要！)
+    function formatData(flatData) {
+        return {
+            now: {
+                car: flatData['now_car'] || 0,
+                bus: flatData['now_bus'] || 0,
+                train: flatData['now_train'] || 0,
+                other: flatData['now_other'] || 0
+            },
+            future: {
+                hsr: flatData['future_hsr'] || 0,
+                car: flatData['future_car'] || 0,
+                train: flatData['future_train'] || 0,
+                bus: flatData['future_bus'] || 0
+            }
+        };
+    }
+
+    // 4. 介面切換
     function showResultsUI(type) {
         document.getElementById(`options-${type}`).style.display = 'none';
         document.getElementById(`results-${type}`).style.display = 'block';
     }
 
-    // 畫圖表
+    // 5. 繪製圖表
     function updateCharts(type) {
         if (!currentData[type]) return;
 
