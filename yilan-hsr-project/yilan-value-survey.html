@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宜蘭價值排序調查</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e63946;
+            --bg-color: #f4f4f4;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h2 { margin-bottom: 10px; color: var(--primary-color); }
+        p.subtitle { color: #666; margin-bottom: 30px; line-height: 1.6; }
+
+        /* 排序列表樣式 */
+        .sortable-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto 30px auto;
+            max-width: 400px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            border: 2px solid #eee;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            user-select: none;
+            position: relative;
+        }
+
+        .item:hover {
+            border-color: #ccc;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .item.dragging {
+            opacity: 0.5;
+            border: 2px dashed #999;
+        }
+
+        .item-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .icon { font-size: 1.5em; }
+
+        /* 手機版好用的上下移動按鈕 */
+        .controls {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .btn-move {
+            background: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            color: #666;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-move:hover { background: #e0e0e0; }
+
+        /* 送出按鈕 */
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover { background-color: #1a252f; transform: scale(1.05); }
+
+        /* 結果區塊（預設隱藏） */
+        #result-area {
+            display: none; /* 隱藏 */
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px dashed #ddd;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chart-box {
+            background: #fdfdfd;
+            border-left: 5px solid var(--accent-color);
+            padding: 20px;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .chart-title {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .rank-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .rank-num {
+            font-weight: 900;
+            color: var(--accent-color);
+            width: 30px;
+            margin-right: 10px;
+            font-style: italic;
+        }
+
+        .analysis-text {
+            margin-top: 20px;
+            font-size: 0.95em;
+            color: #444;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        /* 標示重點 */
+        .highlight {
+            background: linear-gradient(120deg, #ffeebb 0%, #ffeebb 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 40%;
+            background-position: 0 88%;
+            font-weight: bold;
+            color: #000;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>宜蘭價值排序</h2>
+    <p class="subtitle">如果你是宜蘭人，對你來說最重要的事情是什麼？<br>請拖曳（或使用箭頭）將下方項目依照<b>重要程度</b>排序。</p>
+
+    <ul class="sortable-list" id="sortable-list">
+        <li class="item" draggable="true" data-id="traffic">
+            <div class="item-content">
+                <span class="icon">🚄</span>
+                <span>交通便利</span>
+            </div>
+            <div class="controls">
+                <button class="btn-move" onclick="moveUp(this)">↑</button>
+                <button class="btn-move" onclick="moveDown(this)">↓</button>
+            </div>
+        </li>
+        <li class="item" draggable="true" data-id="medical">
+            <div class="item-content">
+                <span class="icon">🏥</span>
+                <span>醫療資源</span>
+            </div>
+            <div class="controls">
+                <button class="btn-move" onclick="moveUp(this)">↑</button>
+                <button class="btn-move" onclick="moveDown(this)">↓</button>
+            </div>
+        </li>
+        <li class="item" draggable="true" data-id="economy">
+            <div class="item-content">
+                <span class="icon">💰</span>
+                <span>經濟/工作機會</span>
+            </div>
+            <div class="controls">
+                <button class="btn-move" onclick="moveUp(this)">↑</button>
+                <button class="btn-move" onclick="moveDown(this)">↓</button>
+            </div>
+        </li>
+    </ul>
+
+    <button class="submit-btn" onclick="showResult()">看結果：在地人怎麼想？</button>
+
+    <div id="result-area">
+        <h3>Reality Check：真實的在地焦慮</h3>
+        <p>你的排序或許和他們不同。根據前立委陳琬惠所做的在地民調，宜蘭鄉親最在乎的其實是...</p>
+        
+        <div class="chart-box">
+            <div class="chart-title">📊 宜蘭在地民調結果</div>
+            <div class="rank-row">
+                <span class="rank-num">1</span>
+                <span>💰 經濟發展 (工作機會)</span>
+            </div>
+            <div class="rank-row">
+                <span class="rank-num">2</span>
+                <span>🚄 交通便利</span>
+            </div>
+            <div class="rank-row">
+                <span class="rank-num">3</span>
+                <span>🏥 醫療照護</span>
+            </div>
+        </div>
+
+        <div class="analysis-text">
+            <p>
+                「我們要的是飯碗，不是只有週末回家的快車。」<br><br>
+                許多人以為宜蘭最缺的是交通，但民調顯示，在地人更焦慮的是<span class="highlight">產業停滯與低薪問題</span>。然而，這條耗資 1800 億的高鐵，除了把人載出去，真的能把產業載進來嗎？
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const sortableList = document.getElementById("sortable-list");
+    const items = sortableList.querySelectorAll(".item");
+
+    // --- 1. 拖曳功能邏輯 (Drag & Drop) ---
+    items.forEach(item => {
+        item.addEventListener("dragstart", () => {
+            // 延遲一點點讓視覺效果更好
+            setTimeout(() => item.classList.add("dragging"), 0);
+        });
+        
+        item.addEventListener("dragend", () => {
+            item.classList.remove("dragging");
+        });
+    });
+
+    const initSortableList = (e) => {
+        e.preventDefault();
+        const draggingItem = document.querySelector(".dragging");
+        // 找到目前滑鼠位置下方不是 dragging 的所有項目
+        let siblings = [...sortableList.querySelectorAll(".item:not(.dragging)")];
+
+        // 找到應該插入的位置
+        let nextSibling = siblings.find(sibling => {
+            return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2;
+        });
+
+        // 插入 DOM
+        sortableList.insertBefore(draggingItem, nextSibling);
+    }
+
+    sortableList.addEventListener("dragover", initSortableList);
+    sortableList.addEventListener("dragenter", e => e.preventDefault());
+
+    // --- 2. 按鈕移動邏輯 (適合手機) ---
+    function moveUp(btn) {
+        const item = btn.closest('.item');
+        const prev = item.previousElementSibling;
+        if (prev) {
+            item.parentNode.insertBefore(item, prev);
+        }
+    }
+
+    function moveDown(btn) {
+        const item = btn.closest('.item');
+        const next = item.nextElementSibling;
+        if (next) {
+            item.parentNode.insertBefore(next, item);
+        }
+    }
+
+    // --- 3. 顯示結果邏輯 ---
+    function showResult() {
+        const resultArea = document.getElementById('result-area');
+        const btn = document.querySelector('.submit-btn');
+        
+        resultArea.style.display = 'block';
+        
+        // 讓按鈕變灰並改文字
+        btn.style.backgroundColor = '#ccc';
+        btn.innerText = '結果如下';
+        btn.disabled = true;
+
+        // 自動捲動到結果區
+        resultArea.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
