@@ -232,7 +232,7 @@
         btnArea.style.pointerEvents = 'none'; // 禁止連點
 
         // 傳送投票請求到 Google Sheet
-        fetch(API_URL + "?action=vote&id=" + voteId, { method: "POST" })
+        fetch(API_URL + "?action=vote&id=" + voteId)
             .then(response => response.json())
             .then(data => {
                 // 更新數據
