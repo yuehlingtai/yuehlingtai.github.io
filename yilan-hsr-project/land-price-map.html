@@ -107,9 +107,11 @@
         // 中心點設在這四個點的中間位置 (約 24.732, 121.766)
         const map = L.map('map').setView([24.732, 121.766], 14);
 
-        // 2. 載入圖資
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+// 選項 B：清楚明亮版 (Voyager)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
         }).addTo(map);
 
         // 3. 定義數據 (已更新為您的精確座標)
@@ -150,7 +152,6 @@
                 growth: "漲幅約 240%~460%",
                 desc: "原本是每坪1萬多的低價農地，因比價效應被帶動翻倍。"
             },
-            // 參考地標
             {
                 name: "宜蘭縣政府", 
                 lat: 24.731275623570053,
@@ -158,7 +159,6 @@
                 type: "landmark"
             }
             ,
-            // 參考地標
             {
                 name: "宜蘭高鐵預定站址",
                 lat: 24.730317951493458,
