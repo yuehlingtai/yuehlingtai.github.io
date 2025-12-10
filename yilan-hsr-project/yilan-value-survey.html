@@ -1,41 +1,71 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>宜蘭價值排序調查</title>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #e63946;
-            --bg-color: #f4f4f4;
-            --card-bg: #ffffff;
+            --primary-color: #ffffff;
+            /* High Contrast White */
+            --accent-color: #ff4757;
+            /* Bright Red */
+            --bg-color: #121212;
+            /* Deep Black */
+            --card-bg: #1e1e1e;
+            /* Solid Opaque Dark */
+            --item-bg: #2a2a2a;
+            /* Slightly lighter than card */
         }
 
         body {
             font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
             background-color: var(--bg-color);
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            color: #333;
+            overflow: hidden;
+            color: var(--primary-color);
         }
 
         .container {
-            max-width: 600px;
             width: 100%;
-            background: white;
+            height: 100vh;
+            max-width: none;
+            max-height: none;
+            overflow-y: auto;
+            background: var(--card-bg);
+            /* Dark Card */
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
             text-align: center;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        h2 { margin-bottom: 10px; color: var(--primary-color); }
-        p.subtitle { color: #666; margin-bottom: 30px; line-height: 1.6; }
+        .container>* {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        p.subtitle {
+            color: #ccc;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
 
         /* 排序列表樣式 */
         .sortable-list {
@@ -49,8 +79,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: var(--card-bg);
-            border: 2px solid #eee;
+            background: var(--item-bg);
+            border: 1px solid #444;
             margin-bottom: 12px;
             padding: 15px 20px;
             border-radius: 10px;
@@ -58,12 +88,14 @@
             transition: all 0.2s ease;
             user-select: none;
             position: relative;
+            color: #fff;
         }
 
         .item:hover {
-            border-color: #ccc;
+            border-color: var(--accent-color);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            background: #333;
         }
 
         .item.dragging {
@@ -79,33 +111,38 @@
             font-weight: bold;
         }
 
-        .icon { font-size: 1.5em; }
+        .icon {
+            font-size: 1.5em;
+        }
 
         /* 手機版好用的上下移動按鈕 */
         .controls {
             display: flex;
             gap: 5px;
         }
-        
+
         .btn-move {
-            background: #f0f0f0;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             border-radius: 5px;
             width: 30px;
             height: 30px;
             cursor: pointer;
-            color: #666;
+            color: #ccc;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .btn-move:hover { background: #e0e0e0; }
+        .btn-move:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
 
         /* 送出按鈕 */
         .submit-btn {
-            background-color: var(--primary-color);
+            background-color: var(--accent-color);
             color: white;
             border: none;
             padding: 12px 40px;
@@ -116,28 +153,20 @@
             font-weight: bold;
         }
 
-        .submit-btn:hover { background-color: #1a252f; transform: scale(1.05); }
+        .submit-btn:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
 
         /* 結果區塊（預設隱藏） */
-        #result-area {
-            display: none; /* 隱藏 */
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 2px dashed #ddd;
-            animation: fadeIn 0.8s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .chart-box {
-            background: #fdfdfd;
+            background: #222;
             border-left: 5px solid var(--accent-color);
             padding: 20px;
             text-align: left;
-            margin-top: 20px;
+            text-align: left;
+            margin-top: 10px;
+            border-radius: 8px;
         }
 
         .chart-title {
@@ -154,6 +183,7 @@
             align-items: center;
             margin-bottom: 10px;
             font-size: 1.1em;
+            color: #fff;
         }
 
         .rank-num {
@@ -167,160 +197,216 @@
         .analysis-text {
             margin-top: 20px;
             font-size: 0.95em;
-            color: #444;
+            color: #ddd;
             line-height: 1.6;
             text-align: justify;
         }
 
         /* 標示重點 */
         .highlight {
-            background: linear-gradient(120deg, #ffeebb 0%, #ffeebb 100%);
-            background-repeat: no-repeat;
-            background-size: 100% 40%;
-            background-position: 0 88%;
+            background: transparent;
+            color: var(--accent-color);
             font-weight: bold;
-            color: #000;
+            text-decoration: underline;
         }
 
+        /* 結果彈窗樣式 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid #333;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-close-btn {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: #555;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        .modal-close-btn:hover {
+            background: #777;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>宜蘭價值排序</h2>
-    <p class="subtitle">如果你是宜蘭人，對你來說最重要的事情是什麼？<br>請拖曳（或使用箭頭）將下方項目依照<b>重要程度</b>排序。</p>
+    <div class="container">
+        <h2>宜蘭價值排序</h2>
+        <p class="subtitle">如果你是宜蘭人，對你來說最重要的事情是什麼？<br>請拖曳（或使用箭頭）將下方項目依照<b>重要程度</b>排序。</p>
 
-    <ul class="sortable-list" id="sortable-list">
-        <li class="item" draggable="true" data-id="traffic">
-            <div class="item-content">
-                <span class="icon">🚄</span>
-                <span>交通便利</span>
-            </div>
-            <div class="controls">
-                <button class="btn-move" onclick="moveUp(this)">↑</button>
-                <button class="btn-move" onclick="moveDown(this)">↓</button>
-            </div>
-        </li>
-        <li class="item" draggable="true" data-id="medical">
-            <div class="item-content">
-                <span class="icon">🏥</span>
-                <span>醫療資源</span>
-            </div>
-            <div class="controls">
-                <button class="btn-move" onclick="moveUp(this)">↑</button>
-                <button class="btn-move" onclick="moveDown(this)">↓</button>
-            </div>
-        </li>
-        <li class="item" draggable="true" data-id="economy">
-            <div class="item-content">
-                <span class="icon">💰</span>
-                <span>經濟/工作機會</span>
-            </div>
-            <div class="controls">
-                <button class="btn-move" onclick="moveUp(this)">↑</button>
-                <button class="btn-move" onclick="moveDown(this)">↓</button>
-            </div>
-        </li>
-    </ul>
+        <ul class="sortable-list" id="sortable-list">
+            <li class="item" draggable="true" data-id="traffic">
+                <div class="item-content">
+                    <span class="icon">🚄</span>
+                    <span>交通便利</span>
+                </div>
+                <div class="controls">
+                    <button class="btn-move" onclick="moveUp(this)">↑</button>
+                    <button class="btn-move" onclick="moveDown(this)">↓</button>
+                </div>
+            </li>
+            <li class="item" draggable="true" data-id="medical">
+                <div class="item-content">
+                    <span class="icon">🏥</span>
+                    <span>醫療資源</span>
+                </div>
+                <div class="controls">
+                    <button class="btn-move" onclick="moveUp(this)">↑</button>
+                    <button class="btn-move" onclick="moveDown(this)">↓</button>
+                </div>
+            </li>
+            <li class="item" draggable="true" data-id="economy">
+                <div class="item-content">
+                    <span class="icon">💰</span>
+                    <span>經濟/工作機會</span>
+                </div>
+                <div class="controls">
+                    <button class="btn-move" onclick="moveUp(this)">↑</button>
+                    <button class="btn-move" onclick="moveDown(this)">↓</button>
+                </div>
+            </li>
+        </ul>
 
-    <button class="submit-btn" onclick="showResult()">看結果：在地人怎麼想？</button>
+        <button class="submit-btn" onclick="showResult()">看結果：在地人怎麼想？</button>
 
-    <div id="result-area">
-        <h3>Reality Check：真實的在地焦慮</h3>
-        <p>你的排序或許和他們不同。根據前立委陳琬惠所做的在地民調，宜蘭鄉親最在乎的其實是...</p>
-        
-        <div class="chart-box">
-            <div class="chart-title">📊 宜蘭在地民調結果</div>
-            <div class="rank-row">
-                <span class="rank-num">1</span>
-                <span>💰 經濟發展 (工作機會)</span>
-            </div>
-            <div class="rank-row">
-                <span class="rank-num">2</span>
-                <span>🚄 交通便利</span>
-            </div>
-            <div class="rank-row">
-                <span class="rank-num">3</span>
-                <span>🏥 醫療照護</span>
-            </div>
-        </div>
+        <!-- Modal 結構 -->
+        <div class="modal-overlay" id="result-modal">
+            <div class="modal-content">
+                <h3>Reality Check：真實的在地焦慮</h3>
+                <p style="color:#ccc; font-size:0.9em; margin-bottom:20px;">
+                    你的排序或許和他們不同。<br>根據前立委陳琬惠所做的在地民調，宜蘭鄉親最在乎的其實是...
+                </p>
 
-        <div class="analysis-text">
-            <p>
-                「我們要的是飯碗，不是只有週末回家的快車。」<br><br>
-                許多人以為宜蘭最缺的是交通，但民調顯示，在地人更焦慮的是<span class="highlight">產業停滯與低薪問題</span>。然而，這條耗資 1800 億的高鐵，除了把人載出去，真的能把產業載進來嗎？
-            </p>
+                <div class="chart-box">
+                    <div class="chart-title">📊 宜蘭在地民調結果</div>
+                    <div class="rank-row">
+                        <span class="rank-num">1</span>
+                        <span>💰 經濟發展 (工作機會)</span>
+                    </div>
+                    <div class="rank-row">
+                        <span class="rank-num">2</span>
+                        <span>🚄 交通便利</span>
+                    </div>
+                    <div class="rank-row">
+                        <span class="rank-num">3</span>
+                        <span>🏥 醫療照護</span>
+                    </div>
+                </div>
+
+                <div class="analysis-text">
+                    <p>
+                        「我們要的是飯碗，不是只有週末回家的快車。」<br><br>
+                        許多人以為宜蘭最缺的是交通，但民調顯示，在地人更焦慮的是<span class="highlight">產業停滯與低薪問題</span>。然而，這條耗資 1800
+                        億的高鐵，除了把人載出去，真的能把產業載進來嗎？
+                    </p>
+                </div>
+
+                <button class="modal-close-btn" onclick="closeResult()">返回調查</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    const sortableList = document.getElementById("sortable-list");
-    const items = sortableList.querySelectorAll(".item");
+    <script>
+        const sortableList = document.getElementById("sortable-list");
+        const items = sortableList.querySelectorAll(".item");
 
-    // --- 1. 拖曳功能邏輯 (Drag & Drop) ---
-    items.forEach(item => {
-        item.addEventListener("dragstart", () => {
-            // 延遲一點點讓視覺效果更好
-            setTimeout(() => item.classList.add("dragging"), 0);
-        });
-        
-        item.addEventListener("dragend", () => {
-            item.classList.remove("dragging");
-        });
-    });
+        // --- 1. 拖曳功能邏輯 (Drag & Drop) ---
+        items.forEach(item => {
+            item.addEventListener("dragstart", () => {
+                // 延遲一點點讓視覺效果更好
+                setTimeout(() => item.classList.add("dragging"), 0);
+            });
 
-    const initSortableList = (e) => {
-        e.preventDefault();
-        const draggingItem = document.querySelector(".dragging");
-        // 找到目前滑鼠位置下方不是 dragging 的所有項目
-        let siblings = [...sortableList.querySelectorAll(".item:not(.dragging)")];
-
-        // 找到應該插入的位置
-        let nextSibling = siblings.find(sibling => {
-            return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2;
+            item.addEventListener("dragend", () => {
+                item.classList.remove("dragging");
+            });
         });
 
-        // 插入 DOM
-        sortableList.insertBefore(draggingItem, nextSibling);
-    }
+        const initSortableList = (e) => {
+            e.preventDefault();
+            const draggingItem = document.querySelector(".dragging");
+            // 找到目前滑鼠位置下方不是 dragging 的所有項目
+            let siblings = [...sortableList.querySelectorAll(".item:not(.dragging)")];
 
-    sortableList.addEventListener("dragover", initSortableList);
-    sortableList.addEventListener("dragenter", e => e.preventDefault());
+            // 找到應該插入的位置
+            let nextSibling = siblings.find(sibling => {
+                return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2;
+            });
 
-    // --- 2. 按鈕移動邏輯 (適合手機) ---
-    function moveUp(btn) {
-        const item = btn.closest('.item');
-        const prev = item.previousElementSibling;
-        if (prev) {
-            item.parentNode.insertBefore(item, prev);
+            // 插入 DOM
+            sortableList.insertBefore(draggingItem, nextSibling);
         }
-    }
 
-    function moveDown(btn) {
-        const item = btn.closest('.item');
-        const next = item.nextElementSibling;
-        if (next) {
-            item.parentNode.insertBefore(next, item);
+        sortableList.addEventListener("dragover", initSortableList);
+        sortableList.addEventListener("dragenter", e => e.preventDefault());
+
+        // --- 2. 按鈕移動邏輯 (適合手機) ---
+        function moveUp(btn) {
+            const item = btn.closest('.item');
+            const prev = item.previousElementSibling;
+            if (prev) {
+                item.parentNode.insertBefore(item, prev);
+            }
         }
-    }
 
-    // --- 3. 顯示結果邏輯 ---
-    function showResult() {
-        const resultArea = document.getElementById('result-area');
-        const btn = document.querySelector('.submit-btn');
-        
-        resultArea.style.display = 'block';
-        
-        // 讓按鈕變灰並改文字
-        btn.style.backgroundColor = '#ccc';
-        btn.innerText = '結果如下';
-        btn.disabled = true;
+        function moveDown(btn) {
+            const item = btn.closest('.item');
+            const next = item.nextElementSibling;
+            if (next) {
+                item.parentNode.insertBefore(next, item);
+            }
+        }
 
-        // 自動捲動到結果區
-        resultArea.scrollIntoView({ behavior: 'smooth' });
-    }
-</script>
+        // --- 3. 顯示結果邏輯 ---
+        // --- 3. 顯示結果邏輯 (Modal) ---
+        function showResult() {
+            const modal = document.getElementById('result-modal');
+            modal.classList.add('active');
+        }
+
+        function closeResult() {
+            const modal = document.getElementById('result-modal');
+            modal.classList.remove('active');
+        }
+    </script>
 
 </body>
+
 </html>

@@ -76,6 +76,46 @@
             pointer-events: auto;
         }
 
+        /* --- Fullscreen Component Section --- */
+        .fullscreen-comp-section {
+            width: 100%;
+            height: 150vh;
+            /* Increased for "pause" effect */
+            position: relative;
+            background: #000;
+            z-index: 10;
+            margin: 0;
+            padding: 0;
+
+            /* Entry Animation Initial State */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .fullscreen-comp-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .comp-sticky-wrapper {
+            width: 100%;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .fullscreen-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
         .scrolling-content {
             position: relative;
             z-index: 1;
@@ -467,11 +507,15 @@
                 <p>採訪台鐵工會理事後發現，高鐵搶走高價值的長途客源後，台鐵勢必減班或轉型。對於付不起高鐵票的在地通勤族，交通權益是否反而受損？</p>
                 <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 30px 0;">
                 <h3 style="text-align: center; color: var(--accent);">👇 您的選擇會是什麼？</h3>
-                <div class="embed-container">
-                    <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/transport-poll.html"
-                        height="600"></iframe>
-                </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Fullscreen Component: Transport Poll -->
+    <!-- Fullscreen Component: Transport Poll -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper">
+            <iframe src="transport-poll.html?v=4" class="fullscreen-iframe"></iframe>
         </div>
     </section>
 
@@ -486,29 +530,48 @@
             <div class="text-card">
                 <h2>Part 2. 土地的算盤</h2>
                 <p>建設是為了交通還是房地產？選址在縣政中心，是為了交通轉乘便利，還是為了炒熱周邊荒涼的重劃區？</p>
-                <div class="embed-container">
-                    <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/yilan-value-survey.html"
-                        height="550"></iframe>
-                </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Fullscreen Component: Yilan Value Survey -->
+    <!-- Fullscreen Component: Yilan Value Survey -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper">
+            <iframe src="yilan-value-survey.html?v=4" class="fullscreen-iframe"></iframe>
+        </div>
+    </section>
+
+    <section class="scrolly-section">
+        <div class="sticky-background">
+            <!-- Repeat the background image for continuity if needed, or leave transparent to show previous sticky? 
+                  Scrollytelling usually needs a background for each section if they are distinct.
+                  Let's reuse the image from Part 2 start -->
+            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop"
+                class="bg-video" style="object-position: center bottom;">
+        </div>
+        <div class="scrolling-content">
 
             <div class="text-card">
                 <h3>關鍵證據：瘋狂的農地</h3>
                 <p>我們調閱了實價登錄資料，發現就在高鐵站址定案的前後（110年底至111年初），農地價格發生了劇烈的變化。</p>
                 <p>地板價消失了。高鐵還沒蓋，地價已經先搭上高鐵。</p>
-                <div class="embed-container">
-                    <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/land-price-chart.html"
-                        height="580"></iframe>
-                </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Fullscreen Component: Land Price Chart -->
+    <!-- Fullscreen Component: Land Price Chart -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper">
+            <iframe src="land-price-chart.html?v=4" class="fullscreen-iframe"></iframe>
         </div>
     </section>
 
 
     <section class="scrolly-section" style="z-index: 10;">
         <div class="sticky-background">
-            <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/land-price-map.html"
-                class="sticky-map-iframe"></iframe>
+            <iframe src="land-price-map.html" class="sticky-map-iframe"></iframe>
         </div>
         <div class="scrolling-content">
             <div class="map-hint-card">
@@ -571,11 +634,25 @@
                 </div>
             </div>
             <div class="text-card">
-                <div class="embed-container">
-                    <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/local-opinions.html"
-                        height="850"></iframe>
-                </div>
             </div>
+
+            <!-- Fullscreen Component: Local Opinions -->
+            <div style="height: 10vh;"></div>
+        </div>
+    </section>
+
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper">
+            <iframe src="local-opinions.html?v=4" class="fullscreen-iframe"></iframe>
+        </div>
+    </section>
+
+    <section class="scrolly-section">
+        <div class="sticky-background">
+            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832" class="bg-video"
+                style="object-position: center bottom;">
+        </div>
+        <div class="scrolling-content">
 
             <div class="text-card"
                 style="text-align: center; border-left: none; border-top: 5px solid var(--accent); margin-bottom: 20vh;">
@@ -680,6 +757,20 @@
             }, { threshold: 0.1 });
 
             observer.observe(heroSection);
+        });
+
+        // --- Intersection Observer for Components Fade In ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const components = document.querySelectorAll('.fullscreen-comp-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            components.forEach(comp => observer.observe(comp));
         });
     </script>
 
