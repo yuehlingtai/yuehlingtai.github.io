@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宜蘭高鐵地價炒作地圖</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        body { margin: 0; padding: 0; font-family: "Microsoft JhengHei", sans-serif; }
+        
+        #map {
+            width: 100%;
+            height: 100vh;
+            background: #f0f0f0;
+        }
+
+        /* 彈出視窗樣式 */
+        .custom-popup .leaflet-popup-content-wrapper {
+            border-radius: 10px;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .custom-popup .leaflet-popup-content {
+            margin: 0;
+            width: 280px !important;
+        }
+        .custom-popup .leaflet-popup-tip {
+            background: #2c3e50; /* 讓箭頭跟卡片標頭同色 */
+        }
+        
+        /* 卡片內容設計 */
+        .card-header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-bottom: 3px solid #e74c3c;
+        }
+        .card-body {
+            padding: 15px;
+            background: white;
+        }
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 8px;
+        }
+        .price-label-text { color: #666; font-size: 0.9em; }
+        .price-value { font-weight: bold; font-size: 1.1em; }
+        .price-value.old { color: #2980b9; } /* 藍色 */
+        .price-value.new { color: #c0392b; font-size: 1.4em; } /* 紅色 */
+        
+        .growth-tag {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-top: 10px;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        /* 浮動標題框 */
+        .map-title {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 320px;
+            border-left: 5px solid #c0392b;
+        }
+        .map-title h1 { margin: 0 0 10px 0; font-size: 1.5em; color: #333; }
+        .map-title p { margin: 0; color: #666; line-height: 1.5; font-size: 0.95em; }
+        .legend-item { display: flex; align-items: center; margin-top: 10px; font-size: 0.9em; color: #555; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; display: inline-block; }
+
+    </style>
+</head>
+<body>
+
+    <div class="map-title">
+        <h1>宜蘭高鐵炒房地圖</h1>
+        <p>點擊地圖上的紅點，查看 <b>110年(定案前)</b> 與 <b>111年(定案後)</b> 的驚人漲幅。</p>
+        <div class="legend-item"><span class="legend-dot" style="background:#e74c3c;"></span>漲幅熱區</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#3498db;"></span>參考地標</div>
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+        // 1. 初始化地圖
+        // 加入 scrollWheelZoom: false，讓使用者捲動頁面時不會被地圖卡住
+        const map = L.map('map', {
+            scrollWheelZoom: false, // 🔥 關鍵修正
+            dragging: !L.Browser.mobile, // (選用) 手機版也建議禁止拖曳，避免手指滑不動頁面
+            tap: !L.Browser.mobile
+        }).setView([24.732, 121.766], 14);
+
+        // 2. 載入圖資 (使用 OpenStreetMap，免費)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // 3. 定義數據 (已更新為您的精確座標)
+        const locations = [
+            {
+                name: "凱旋二段 (核心區)",
+                lat: 24.734927157889047, 
+                lng: 121.76916810605083,
+                priceOld: "3.1 ~ 8.0",
+                priceNew: "11.0 ~ 14.0",
+                growth: "漲幅約 400%",
+                desc: "高鐵預定站址所在地，漲勢最兇猛，地板價直接消失。"
+            },
+            {
+                name: "凱旋一段 (南側)",
+                lat: 24.72571270471212, 
+                lng: 121.77218520036125,
+                priceOld: "2.8",
+                priceNew: "10.7 ~ 12.1",
+                growth: "漲幅約 430%",
+                desc: "緊鄰核心區南側，受惠於擴大開發預期，補漲強勁。"
+            },
+            {
+                name: "振興段 (科學園區旁)",
+                lat: 24.741908092594826, 
+                lng: 121.76964420695157,
+                priceOld: "2.6 (親友亂象)",
+                priceNew: "9.1 (站穩)",
+                growth: "漲幅約 350%",
+                desc: "110年底出現大量異常親友交易，目前價格已定錨在9萬左右。"
+            },
+            {
+                name: "建蘭新段 (外圍)",
+                lat: 24.72677531983618, 
+                lng: 121.75377741396957,
+                priceOld: "1.4",
+                priceNew: "3.35 ~ 7.9",
+                growth: "漲幅約 240%~460%",
+                desc: "原本是每坪1萬多的低價農地，因比價效應被帶動翻倍。"
+            },
+            {
+                name: "宜蘭縣政府", 
+                lat: 24.731275623570053,
+                lng: 121.76297189076136,
+                type: "landmark"
+            }
+            ,
+            {
+                name: "宜蘭高鐵預定站址",
+                lat: 24.730317951493458,
+                lng: 121.76597540333421,
+                type: "landmark"
+            }
+        ];
+
+        // 4. 把數據畫在地圖上
+        locations.forEach(point => {
+            
+            // 如果是地標 (縣政府)，用藍色標記
+            if(point.type === "landmark") {
+                L.marker([point.lat, point.lng])
+                 .addTo(map)
+                 .bindPopup(`<b>${point.name}</b><br>縣政中心所在`);
+                return;
+            }
+
+            // 如果是數據點，使用紅色圓圈標記
+            const marker = L.circleMarker([point.lat, point.lng], {
+                color: '#c0392b',      // 邊框紅
+                fillColor: '#e74c3c',  // 填充紅
+                fillOpacity: 0.8,
+                radius: 12 + (Math.random() * 5) // 讓圈圈大小稍微動態
+            }).addTo(map);
+
+            // 設計彈出視窗 HTML
+            const popupContent = `
+                <div class="card-header">${point.name}</div>
+                <div class="card-body">
+                    <div class="price-row">
+                        <span class="price-label-text">110年(定案前)</span>
+                        <span class="price-value old">${point.priceOld} 萬</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label-text">111年(定案後)</span>
+                        <span class="price-value new">${point.priceNew} 萬</span>
+                    </div>
+                    <div class="growth-tag">🔥 ${point.growth}</div>
+                    <p style="font-size:0.9em; color:#555; margin-top:10px; line-height:1.4;">
+                        ${point.desc}
+                    </p>
+                </div>
+            `;
+
+            // 綁定彈出視窗
+            marker.bindPopup(popupContent, {
+                className: 'custom-popup',
+                closeButton: false
+            });
+            
+            // 加入 hover 效果
+            marker.on('mouseover', function (e) {
+                this.openPopup();
+            });
+            // (選用) mouseout 關閉，如果你希望移開就關掉，可以把下面註解打開
+            // marker.on('mouseout', function (e) {
+            //    this.closePopup();
+            // });
+        });
+
+    </script>
+</body>
+</html>

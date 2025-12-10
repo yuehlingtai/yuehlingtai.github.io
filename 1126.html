@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>依附關係風格檢測</title>
+    <style>
+        :root {
+            /* 調整為較溫暖、心理學風格的配色 */
+            --primary-color: #BC4B51; /* Muted Red */
+            --secondary-color: #1F2833; /* Dark Slate */
+            --accent-color: #F4A261; /* Sandy Orange */
+            --text-light: #F4F1DE;
+            --text-dark: #333;
+            
+            /* 四種依附類型的背景色 */
+            --secure-bg: #8CB369;    /* Green - Secure */
+            --anxious-bg: #F4A261;   /* Orange - Anxious */
+            --avoidant-bg: #5B8E7D;  /* Teal - Avoidant */
+            --fearful-bg: #BC4B51;   /* Red - Fearful/Disorganized */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            overflow-x: hidden;
+            background-color: #f7f7f7;
+        }
+
+        section, footer {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.5s ease;
+        }
+
+        /* Hero Section */
+        .bg-primary {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+
+        /* Intro Section */
+        #intro {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+        }
+
+        /* Test Section */
+        #test {
+            background-color: #fff;
+            color: var(--text-dark);
+            align-items: stretch;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-item {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            background: #fafafa;
+            border-radius: 8px;
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            flex-wrap: wrap; /* 手機版自動換行 */
+            gap: 10px;
+        }
+
+        .options label {
+            cursor: pointer;
+            padding: 0.8rem;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            transition: all 0.2s;
+            flex: 1;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .options label:hover {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .options input[type="radio"]:checked + span {
+            font-weight: bold;
+        }
+        
+        /* 選中樣式優化 */
+        .options input:checked + span { 
+            color: var(--primary-color);
+        }
+
+        /* Age Section */
+        #demographics {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            display: none; 
+        }
+
+        /* Result Sections */
+        .result-section {
+            display: none; 
+            color: white;
+            padding: 3rem 1rem;
+        }
+
+        #result-secure { background-color: var(--secure-bg); }
+        #result-anxious { background-color: var(--anxious-bg); }
+        #result-avoidant { background-color: var(--avoidant-bg); }
+        #result-fearful { background-color: var(--fearful-bg); }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #fff;
+        }
+
+        /* Overlay for Animations */
+        #transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(31, 40, 51, 0.95);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 2rem;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        h1 { font-size: 2.5rem; margin-bottom: 1rem; letter-spacing: 2px; }
+        h2 { font-size: 1.8rem; margin-bottom: 1rem; }
+        h3 { font-size: 1.4rem; margin-top: 1rem; margin-bottom: 0.5rem; opacity: 0.9;}
+        p { font-size: 1.1rem; line-height: 1.8; max-width: 650px; margin-bottom: 1rem;}
+        
+        input[type="date"] {
+            padding: 1rem;
+            font-size: 1.5rem;
+            border-radius: 10px;
+            border: none;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .score-box {
+            background: rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <section class="bg-primary">
+        <h1>依附關係自我檢測</h1>
+        <p>在愛情與人際關係中，你是渴望親密，還是習慣保持距離？<br>探索你的依附風格，找到更舒適的相處模式。</p>
+        <button class="btn btn-primary" onclick="scrollToId('intro')">開始探索</button>
+    </section>
+
+    <section id="intro">
+        <h2>關於依附理論</h2>
+        <p>依附理論 (Attachment Theory) 幫助我們了解自己在親密關係中的反應模式。本測驗將分析您的「焦慮」與「逃避」兩個維度。</p>
+        <p style="font-size: 0.9rem; opacity: 0.8; margin-top:1rem;">*本量表改編自親密關係體驗量表 (ECR)，僅供自我探索參考。</p>
+        <button class="btn btn-primary" onclick="scrollToId('test')">進入測驗</button>
+    </section>
+
+    <section id="test">
+        <h2>親密關係體驗量表</h2>
+        <p style="margin-bottom: 2rem; color: #666;">請依照您在「親密關係/伴侶關係」中的真實感受作答</p>
+        <form id="test-form">
+            </form>
+        <button class="btn btn-primary" onclick="submitTest()">下一步：基本資料</button>
+    </section>
+
+    <section id="demographics">
+        <h2>最後一步：請輸入生日</h2>
+        <p>讓我們結合您的星座特質與依附風格進行分析。</p>
+        <input type="date" id="birthdate" required>
+        <button class="btn btn-primary" onclick="processResults()">查看分析結果</button>
+    </section>
+
+    <div id="transition-overlay">
+        <div id="overlay-text">正在分析您的依附維度...</div>
+    </div>
+
+    <section id="result-secure" class="result-section">
+        <div class="score-box">
+            <h3>類型：安全型依附 (Secure)</h3>
+            <p>焦慮指數：<span class="anx-score"></span> / 逃避指數：<span class="avd-score"></span></p>
+        </div>
+        <h1>「溫暖的港灣」</h1>
+        <p>您在關係中感到自在且安全。您不擔心被拋棄，也樂於與他人親近。您能夠適度依賴伴侶，也能讓伴侶依賴您，同時保有獨立的自我。</p>
+        <p><strong>建議：</strong>您是身邊人的安定力量，請繼續保持這種健康的溝通模式，並試著理解那些較不安全感的伴侶。</p>
+        <button class="btn btn-primary" onclick="scrollToId('footer')">結束</button>
+    </section>
+
+    <section id="result-anxious" class="result-section">
+        <div class="score-box">
+            <h3>類型：焦慮型依附 (Anxious)</h3>
+            <p>焦慮指數：<span class="anx-score"></span> / 逃避指數：<span class="avd-score"></span></p>
+        </div>
+        <h1>「渴望愛的追逐者」</h1>
+        <p>您非常重視親密關係，但常擔心伴侶不像您愛他那樣愛您。您對關係中的變化很敏感，容易感到不安，需要伴侶頻繁的保證與確認。</p>
+        <p><strong>建議：</strong>練習建立自我價值感，不完全依賴他人的肯定。當感到焦慮時，試著先「暫停」一下，分辨是事實還是想像。</p>
+        <button class="btn btn-primary" onclick="scrollToId('footer')">結束</button>
+    </section>
+
+    <section id="result-avoidant" class="result-section">
+        <div class="score-box">
+            <h3>類型：逃避型依附 (Avoidant)</h3>
+            <p>焦慮指數：<span class="anx-score"></span> / 逃避指數：<span class="avd-score"></span></p>
+        </div>
+        <h1>「獨立的獨行俠」</h1>
+        <p>您習慣依靠自己，覺得過度親密會失去自由。當伴侶試圖太靠近或依賴您時，您會下意識地退縮或感到不自在，傾向壓抑自己的情感需求。</p>
+        <p><strong>建議：</strong>試著展露一點脆弱並不會讓您失去獨立性。練習表達內心的感受，讓伴侶有機會真正了解您。</p>
+        <button class="btn btn-primary" onclick="scrollToId('footer')">結束</button>
+    </section>
+
+    <section id="result-fearful" class="result-section">
+        <div class="score-box">
+            <h3>類型：恐懼/混亂型依附 (Fearful-Avoidant)</h3>
+            <p>焦慮指數：<span class="anx-score"></span> / 逃避指數：<span class="avd-score"></span></p>
+        </div>
+        <h1>「矛盾的刺蝟」</h1>
+        <p>您渴望親密，但同時又害怕受傷。您想靠近伴侶，但當關係太親近時又會恐懼被拒絕或控制，因此表現出忽冷忽熱、反覆無常的態度。</p>
+        <p><strong>建議：</strong>這種矛盾常源於過去的受傷經驗。請對自己多點耐心，建立邊界感，並考慮尋求專業諮商協助來修復內在的安全感。</p>
+        <button class="btn btn-primary" onclick="scrollToId('footer')">結束</button>
+    </section>
+
+    <footer id="footer">
+        <h2>感謝您的參與</h2>
+        <p>依附風格是可以透過覺察與練習改變的（這稱為「獲得性安全依附」）。</p>
+        <p>&copy; 2025 網頁設計與敘事</p>
+        <button class="btn btn-primary" onclick="location.reload()">重新測驗</button>
+    </footer>
+
+    <script>
+        // 題目設計：前5題測「焦慮」，後5題測「逃避」
+        const questions = [
+            // 焦慮維度 (Anxiety)
+            "我常擔心伴侶不像我愛他/她那樣愛我。",
+            "我很需要伴侶不斷確認他/她對我的愛。",
+            "當伴侶沒在身邊時，我會感到焦慮或不安。",
+            "我常覺得伴侶對我不夠真心或不夠投入。",
+            "如果伴侶對我冷淡，我會擔心是被拋棄的前兆。",
+            // 逃避維度 (Avoidance)
+            "我覺得要對伴侶完全敞開心房很困難。",
+            "當伴侶太親近我時，我會感到不自在。",
+            "我比較習慣依靠自己，不喜歡依賴別人。",
+            "我通常不喜歡跟伴侶討論深層的感覺。",
+            "當伴侶表現得太依賴我時，我會想逃開。"
+        ];
+
+        const options = [
+            { label: "非常不符合", value: 1 },
+            { label: "不符合", value: 2 },
+            { label: "普通", value: 3 },
+            { label: "符合", value: 4 },
+            { label: "非常符合", value: 5 }
+        ];
+
+        // Render Questions
+        const form = document.getElementById('test-form');
+        questions.forEach((q, index) => {
+            const div = document.createElement('div');
+            div.className = 'question-item';
+            div.innerHTML = `
+                <p><strong>${index + 1}. ${q}</strong></p>
+                <div class="options">
+                    ${options.map(opt => `
+                        <label>
+                            <input type="radio" name="q${index}" value="${opt.value}" required>
+                            <span>${opt.label}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            form.appendChild(div);
+        });
+
+        let anxietyScore = 0;
+        let avoidanceScore = 0;
+
+        function scrollToId(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function submitTest() {
+            const formData = new FormData(form);
+            let tempAnx = 0;
+            let tempAvd = 0;
+            let answeredCount = 0;
+
+            // 遍歷所有答案
+            for (let pair of formData.entries()) {
+                const qIndex = parseInt(pair[0].replace('q', ''));
+                const val = parseInt(pair[1]);
+                
+                // 前5題是焦慮，後5題是逃避
+                if (qIndex < 5) {
+                    tempAnx += val;
+                } else {
+                    tempAvd += val;
+                }
+                answeredCount++;
+            }
+
+            if (answeredCount < questions.length) {
+                alert("請回答所有問題！");
+                return;
+            }
+
+            anxietyScore = tempAnx;
+            avoidanceScore = tempAvd;
+            
+            // Hide Test, Show Demographics
+            document.getElementById('test').style.display = 'none';
+            const demoSection = document.getElementById('demographics');
+            demoSection.style.display = 'flex';
+            demoSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getZodiacSign(day, month) {
+            const zodiacSigns = [
+                '摩羯座', '水瓶座', '雙魚座', '牡羊座', '金牛座', '雙子座',
+                '巨蟹座', '獅子座', '處女座', '天秤座', '天蠍座', '射手座'
+            ];
+            const lastDay = [19, 18, 20, 19, 20, 20, 22, 22, 22, 22, 21, 21];
+            return (day > lastDay[month - 1]) ? zodiacSigns[month] : zodiacSigns[month - 1];
+        }
+
+        function calculateAge(birthDate) {
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        async function processResults() {
+            const dateInput = document.getElementById('birthdate').value;
+            if (!dateInput) {
+                alert("請輸入生日！");
+                return;
+            }
+
+            const birthDate = new Date(dateInput);
+            const age = calculateAge(birthDate);
+            const zodiac = getZodiacSign(birthDate.getDate(), birthDate.getMonth() + 1);
+
+            // Start Animation Sequence
+            const overlay = document.getElementById('transition-overlay');
+            const overlayText = document.getElementById('overlay-text');
+            
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'all';
+
+            // Animation Steps
+            overlayText.innerText = `你的年齡是 ${age} 歲`;
+            await wait(2000);
+            
+            overlayText.style.opacity = '0';
+            await wait(500);
+            
+            overlayText.innerText = `你的星座是 ${zodiac}`;
+            overlayText.style.opacity = '1';
+            await wait(2000);
+
+            overlayText.style.opacity = '0';
+            await wait(500);
+
+            overlayText.innerText = `正在分析深層潛意識...`;
+            overlayText.style.opacity = '1';
+            await wait(2000);
+
+            // Fade out overlay
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+
+            // Show Result
+            showResult();
+        }
+
+        function wait(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function showResult() {
+            // Hide previous sections
+            document.getElementById('demographics').style.display = 'none';
+            document.getElementById('intro').style.display = 'none';
+            document.querySelector('.bg-primary').style.display = 'none';
+
+            // 計算依附類型邏輯
+            // 每組滿分25分，中位數約為15分 (3分x5題)
+            // 設定閾值：大於 15 視為 "高"，小於等於 15 視為 "低"
+            const threshold = 15;
+            let resultId = '';
+
+            const isHighAnx = anxietyScore > threshold;
+            const isHighAvd = avoidanceScore > threshold;
+
+            if (!isHighAnx && !isHighAvd) {
+                resultId = 'result-secure'; // 低焦慮、低逃避 -> 安全型
+            } else if (isHighAnx && !isHighAvd) {
+                resultId = 'result-anxious'; // 高焦慮、低逃避 -> 焦慮型
+            } else if (!isHighAnx && isHighAvd) {
+                resultId = 'result-avoidant'; // 低焦慮、高逃避 -> 逃避型
+            } else {
+                resultId = 'result-fearful'; // 高焦慮、高逃避 -> 恐懼/混亂型
+            }
+
+            const targetSection = document.getElementById(resultId);
+            targetSection.style.display = 'flex';
+            
+            // 填入分數
+            targetSection.querySelector('.anx-score').innerText = anxietyScore;
+            targetSection.querySelector('.avd-score').innerText = avoidanceScore;
+
+            // Ensure footer is visible
+            document.getElementById('footer').style.display = 'flex';
+
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

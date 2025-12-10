@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>失速的千億拼圖：宜蘭高鐵專題報導</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;500;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --text-light: #f0f0f0;
+            --accent: #e74c3c;
+            --card-bg: rgba(0, 0, 0, 0.6);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Serif TC', serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        /* --- Scrollytelling 結構 --- */
+        /* --- Scrollytelling 結構 --- */
+        .scrolly-section {
+            position: relative;
+            width: 100%;
+            isolation: isolate;
+            /* Create stacking context so sticky children don't float over next section's background */
+        }
+
+        .hero-section {
+            height: 300vh;
+        }
+
+        .sticky-background {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .bg-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6);
+        }
+
+        .sticky-map-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            pointer-events: auto;
+        }
+
+        .scrolling-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .header-sticky-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 300vh;
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .sound-btn {
+            margin-top: 30px;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            pointer-events: auto;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .sound-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+        }
+
+        .text-card {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 8px;
+            max-width: 800px;
+            width: 90%;
+            backdrop-filter: blur(8px);
+            border-left: 4px solid var(--accent);
+            margin-bottom: 60vh;
+            pointer-events: auto;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 0.8s forwards;
+            animation-timeline: view();
+            animation-range: entry 5% cover 25%;
+
+            /* Sticky Component Setting */
+            position: sticky;
+            top: 15vh;
+            /* Center vertically roughly */
+        }
+
+        .map-hint-card {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-top: 80vh;
+            margin-bottom: 80vh;
+            pointer-events: auto;
+            text-align: center;
+            backdrop-filter: blur(5px);
+
+            /* Sticky Component Setting */
+            position: sticky;
+            top: 15vh;
+        }
+
+        .embed-container {
+            width: 100%;
+            background: transparent;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        iframe {
+            width: 100%;
+            border: none;
+            display: block;
+            border-radius: 4px;
+        }
+
+        /* --- 🔥 參照 CodePen 風格的滿版 Slider --- */
+
+        /* --- 🔥 滿版 Slider 修正版 --- */
+        .full-width-slider-wrapper {
+            width: 100vw;
+            /* 寬度設定為視窗全寬 */
+            position: relative;
+
+            /* Sticky Component Setting */
+            position: sticky;
+            top: 0;
+
+            /* 核心修正：改用 transform 來校正位置，比 margin 更穩 */
+            left: 50%;
+            transform: translateX(-50%);
+
+            /* 移除原本的負邊距，避免計算錯誤 */
+            margin-left: 0;
+            margin-right: 0;
+
+            margin-bottom: 60vh;
+            /* 保持下方的間距 */
+            pointer-events: auto;
+            border-top: 5px solid var(--accent);
+            border-bottom: 5px solid var(--accent);
+            background: #000;
+            z-index: 20;
+            /* 確保它在最上層 */
+        }
+
+        .comp-container {
+            position: relative;
+            width: 100%;
+            height: 90vh;
+            /* 滿版高度 */
+            overflow: hidden;
+        }
+
+        /* 兩張圖片的共通設定 */
+        .comp-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 關鍵：讓圖片填滿不變形 */
+            display: block;
+            user-select: none;
+        }
+
+        /* 底層圖 (2025 After) - 預設全寬 */
+        .comp-img-after {
+            z-index: 1;
+        }
+
+        /* 上層圖 (2005 Before) - 透過寬度控制顯示 */
+        .comp-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            /* 初始寬度 */
+            height: 100%;
+            overflow: hidden;
+            /* 關鍵：遮罩效果 */
+            z-index: 2;
+            border-right: 3px solid white;
+            /* 分隔線 */
+        }
+
+        /* ❗重點：上層圖裡面的圖片，必須強制設為容器的 100% 寬度 (100vw)
+           這樣當 overlay 變窄時，圖片才不會被擠壓，而是被裁切 */
+        .comp-img-before {
+            width: 100vw;
+            height: 100%;
+            object-fit: cover;
+            max-width: none;
+            /* 防止被父層限制 */
+        }
+
+        /* 拉桿 */
+        .comp-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* 初始位置 */
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            border: 3px solid white;
+            border-radius: 50%;
+            z-index: 3;
+            cursor: col-resize;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            /* 讓滑鼠事件穿透到 container，由 JS 統一計算 */
+            pointer-events: none;
+        }
+
+        /* 標籤 */
+        .comp-label {
+            position: absolute;
+            top: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            z-index: 4;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .comp-label-before {
+            left: 30px;
+        }
+
+        .comp-label-after {
+            right: 30px;
+        }
+
+        /* 蚊子動畫 */
+        .mosquito {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0;
+            animation: fly 6s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .mosquito:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .mosquito:nth-child(2) {
+            animation-delay: 2s;
+        }
+
+        .mosquito:nth-child(3) {
+            animation-delay: 4s;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes fly {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translate(40px, -50px) rotate(20deg);
+            }
+
+            80% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translate(-20px, 20px) rotate(-10deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .text-card {
+                padding: 25px;
+                width: 95%;
+            }
+
+            .comp-container {
+                height: 60vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section id="hero" class="scrolly-section hero-section">
+        <div class="sticky-background">
+            <video id="heroVideo" class="bg-video" autoplay muted loop playsinline preload="auto" fetchpriority="high"
+                poster="https://images.unsplash.com/photo-1474487548417-781cb714c22d?q=80&w=2070">
+                <source src="my-train.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="header-sticky-wrapper">
+            <div class="header-content">
+                <h1 class="main-title">失速的千億拼圖</h1>
+                <div style="background: var(--accent); padding: 5px 20px; font-size: 1.2rem; font-weight: bold;">
+                    宜蘭高鐵這帖藥，治的是交通還是炒房？
+                </div>
+                <p style="margin-top: 30px; opacity: 0.9; font-size: 1rem;">
+                    文字：戴悦鈴、楊佳蓁、張童寧 ｜ 2025 深度報導
+                </p>
+                <button class="sound-btn" onclick="toggleSound()">
+                    <span id="soundIcon">🔇</span> <span id="soundText">開啟現場音效</span>
+                </button>
+                <div style="margin-top: 80px; animation: bounce 2s infinite; font-size: 1.5rem; opacity: 0.7;">⬇</div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="scrolly-section">
+        <div class="sticky-background">
+            <video class="bg-video" autoplay muted loop playsinline>
+                <source src="https://videos.pexels.com/video-files/2103099/2103099-hd_1920_1080_30fps.mp4"
+                    type="video/mp4">
+            </video>
+        </div>
+
+        <div class="scrolling-content" style="padding-top: 30vh;">
+            <div class="text-card">
+                <p><b>【引言】 1800 億的豪賭</b></p>
+                <p>宜蘭人盼了二十年，終於盼到高鐵延伸。官方宣稱這是打通東部任督二脈的萬靈丹，既能解決塞車，又能帶動科學園區。但在美好的藍圖下，這是不是一場「藥不對症」的豪賭？</p>
+            </div>
+
+            <div class="text-card">
+                <h2>Part 1. 系統的代價：被犧牲的台鐵</h2>
+                <br>
+                <h3>Q1：高鐵進場，台鐵退場？</h3>
+                <p>採訪台鐵工會理事後發現，高鐵搶走高價值的長途客源後，台鐵勢必減班或轉型。對於付不起高鐵票的在地通勤族，交通權益是否反而受損？</p>
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 30px 0;">
+                <h3 style="text-align: center; color: var(--accent);">👇 您的選擇會是什麼？</h3>
+                <div class="embed-container">
+                    <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/transport-poll.html"
+                        height="600"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="scrolly-section">
+        <div class="sticky-background">
+            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop"
+                class="bg-video" style="object-position: center bottom;">
+        </div>
+
+        <div class="scrolling-content">
+            <div class="text-card">
+                <h2>Part 2. 土地的算盤</h2>
+                <p>建設是為了交通還是房地產？選址在縣政中心，是為了交通轉乘便利，還是為了炒熱周邊荒涼的重劃區？</p>
+                <div class="embed-container">
+                    <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/yilan-value-survey.html"
+                        height="550"></iframe>
+                </div>
+            </div>
+
+            <div class="text-card">
+                <h3>關鍵證據：瘋狂的農地</h3>
+                <p>我們調閱了實價登錄資料，發現就在高鐵站址定案的前後（110年底至111年初），農地價格發生了劇烈的變化。</p>
+                <p>地板價消失了。高鐵還沒蓋，地價已經先搭上高鐵。</p>
+                <div class="embed-container">
+                    <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/land-price-chart.html"
+                        height="580"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="scrolly-section" style="z-index: 10;">
+        <div class="sticky-background">
+            <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/land-price-map.html"
+                class="sticky-map-iframe"></iframe>
+        </div>
+        <div class="scrolling-content">
+            <div class="map-hint-card">
+                <h3>☝️ 地價風暴地圖</h3>
+                <p style="margin: 0; font-size: 0.95rem;">
+                    請點擊地圖上的紅點，查看 110年與 111年的漲幅。<br>
+                    (繼續往下滑動以閱讀下一章)
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="scrolly-section">
+
+        <div class="sticky-background">
+            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832" class="bg-video"
+                style="object-position: center bottom;">
+        </div>
+
+        <div class="scrolling-content">
+
+            <div class="text-card">
+                <h2>Part 3. 土地的迷思</h2>
+                <br>
+                <h3>Q2：從「百萬人流」到「八卦陣空城」</h3>
+                <p>以「支援科學園區」為名，行「擴大都市計畫」之實。顯示當年規劃的宏大願景，對比今日大片閒置的草地與零星的別墅。</p>
+                <p>如果連舊的園區都填不滿，高鐵帶來的這個「新特區」，會不會只是把泡沫吹得更大？</p>
+            </div>
+
+            <div class="full-width-slider-wrapper">
+                <div class="comp-container" id="compSlider">
+                    <img src="bagua-2025.jpg" class="comp-img comp-img-after" alt="2025">
+                    <span class="comp-label comp-label-after">2025 現況 (空蕩蕩)</span>
+
+                    <div class="comp-overlay">
+                        <img src="bagua-2005.jpg" class="comp-img comp-img-before" alt="2005">
+                        <span class="comp-label comp-label-before">2005 規劃初期</span>
+                    </div>
+
+                    <div class="comp-handle">
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
+                            fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: white;">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <div class="mosquito-swarm">
+                        <div class="mosquito" style="top:30%; left:20%;">🦟</div>
+                        <div class="mosquito" style="top:50%; left:60%;">🦟</div>
+                        <div class="mosquito" style="top:70%; left:40%;">🦟</div>
+                    </div>
+                </div>
+
+                <div
+                    style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); 
+                            background: rgba(0,0,0,0.7); padding: 5px 15px; border-radius: 20px; color: #ddd; font-size: 0.9rem; pointer-events: none; z-index: 10;">
+                    ▲ 左右拖動拉桿，看看 20 年來這裡長出了什麼？
+                </div>
+            </div>
+            <div class="text-card">
+                <div class="embed-container">
+                    <iframe src="https://yuehlingtai.github.io/yilan-hsr-project/local-opinions.html"
+                        height="850"></iframe>
+                </div>
+            </div>
+
+            <div class="text-card"
+                style="text-align: center; border-left: none; border-top: 5px solid var(--accent); margin-bottom: 20vh;">
+                <h2>結語：我們要的是發展，還是幻覺？</h2>
+                <br>
+                <p>宜蘭需要交通改善，也需要產業升級。但把所有資源都押注在一條「載人高鐵」上，而忽視貨運物流與在地轉乘，可能最後只換來炒高的地皮，與依舊塞車的國道五號。</p>
+                <p>這條耗資 1800 億的鐵路，究竟是為了讓宜蘭人回家的路更近，還是為了把炒房的熱錢載進來？</p>
+                <p
+                    style="margin-top: 60px; font-size: 0.9rem; opacity: 0.6; border-top: 1px solid #555; padding-top: 20px;">
+                    Copyright © 2025 國立臺灣大學新聞研究所 報導團隊<br>
+                    資料來源：內政部實價登錄、交通部鐵道局、Google Earth
+                </p>
+            </div>
+
+            <div style="height: 10vh;"></div>
+        </div>
+    </section>
+
+    <script>
+        // ... (保留原本的 toggleSound 腳本) ...
+
+        // --- 衛星圖滑動功能 (CodePen Style) ---
+        document.addEventListener("DOMContentLoaded", function () {
+            const container = document.getElementById('compSlider');
+            if (!container) return;
+
+            const overlay = container.querySelector('.comp-overlay');
+            const handle = container.querySelector('.comp-handle');
+            let isDragging = false;
+
+            // 初始化位置 (50%)
+            const initialPos = 50;
+            overlay.style.width = initialPos + '%';
+            handle.style.left = initialPos + '%';
+
+            // 通用移動函式
+            function move(pageX) {
+                const rect = container.getBoundingClientRect();
+                let x = pageX - rect.left - window.scrollX;
+                // 邊界檢查
+                if (x < 0) x = 0;
+                if (x > rect.width) x = rect.width;
+
+                const percent = (x / rect.width) * 100;
+
+                // 更新 CSS
+                overlay.style.width = percent + '%';
+                handle.style.left = percent + '%';
+            }
+
+            // 滑鼠事件
+            container.addEventListener('mousedown', () => isDragging = true);
+            window.addEventListener('mouseup', () => isDragging = false);
+            container.addEventListener('mousemove', (e) => {
+                if (isDragging) move(e.pageX);
+            });
+
+            // 手機觸控事件
+            container.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                move(e.touches[0].pageX); // 點下去時就跳過去
+     
