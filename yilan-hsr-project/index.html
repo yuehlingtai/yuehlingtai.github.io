@@ -234,38 +234,19 @@
         /* --- 🔥 參照 CodePen 風格的滿版 Slider --- */
 
         /* --- 🔥 滿版 Slider 修正版 --- */
+        /* --- 🔥 滿版 Slider 修正版 (Inside Fullscreen Section) --- */
         .full-width-slider-wrapper {
-            width: 100vw;
-            /* 寬度設定為視窗全寬 */
+            width: 100%;
+            height: 100%;
             position: relative;
-
-            /* Sticky Component Setting */
-            position: sticky;
-            top: 0;
-
-            /* 核心修正：改用 transform 來校正位置，比 margin 更穩 */
-            left: 50%;
-            transform: translateX(-50%);
-
-            /* 移除原本的負邊距，避免計算錯誤 */
-            margin-left: 0;
-            margin-right: 0;
-
-            margin-bottom: 60vh;
-            /* 保持下方的間距 */
-            pointer-events: auto;
-            border-top: 5px solid var(--accent);
-            border-bottom: 5px solid var(--accent);
             background: #000;
-            z-index: 20;
-            /* 確保它在最上層 */
+            overflow: hidden;
         }
 
         .comp-container {
             position: relative;
             width: 100%;
-            height: 90vh;
-            /* 滿版高度 */
+            height: 100%;
             overflow: hidden;
         }
 
@@ -304,12 +285,23 @@
 
         /* ❗重點：上層圖裡面的圖片，必須強制設為容器的 100% 寬度 (100vw)
            這樣當 overlay 變窄時，圖片才不會被擠壓，而是被裁切 */
+        /* ❗重點：上層圖裡面的圖片，必須強制設為容器的 100vw (或是父容器寬度)
+           但因為現在是 fullscreen，直接繼承父層寬度即可 */
         .comp-img-before {
-            width: 100vw;
+            width: 100%;
+            /* 改回 100% 相對於 overlay */
             height: 100%;
             object-fit: cover;
             max-width: none;
-            /* 防止被父層限制 */
+        }
+
+        /* 修正：需要 JS 動態調整 width 讓它看起來像並沒有被裁切，而是被遮罩 
+           或者，更簡單的做法是：讓 comp-img-before 的寬度永遠等於視窗寬度
+        */
+        .comp-img-before {
+            width: 100vw;
+            /* 保持 100vw 以確保圖片不變形 */
+            height: 100vh;
         }
 
         /* 拉桿 */
@@ -344,17 +336,20 @@
             border-radius: 5px;
             font-weight: bold;
             font-size: 1.1rem;
-            z-index: 4;
             pointer-events: none;
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
         .comp-label-before {
             left: 30px;
+            z-index: 3;
+            /* On top of image inside overlay */
         }
 
         .comp-label-after {
             right: 30px;
+            z-index: 1;
+            /* Below overlay (z-index: 2) so it gets covered */
         }
 
         /* 蚊子動畫 */
@@ -602,10 +597,22 @@
                 <p>如果連舊的園區都填不滿，高鐵帶來的這個「新特區」，會不會只是把泡沫吹得更大？</p>
             </div>
 
+
+            <div class="text-card">
+            </div>
+
+            <!-- Fullscreen Component: Local Opinions -->
+            <div style="height: 10vh;"></div>
+        </div>
+    </section>
+
+    <!-- Fullscreen Component: Image Slider -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper">
             <div class="full-width-slider-wrapper">
                 <div class="comp-container" id="compSlider">
                     <img src="bagua-2025.jpg" class="comp-img comp-img-after" alt="2025">
-                    <span class="comp-label comp-label-after">2025 現況 (空蕩蕩)</span>
+                    <span class="comp-label comp-label-after">2025 現況</span>
 
                     <div class="comp-overlay">
                         <img src="bagua-2005.jpg" class="comp-img comp-img-before" alt="2005">
@@ -633,11 +640,6 @@
                     ▲ 左右拖動拉桿，看看 20 年來這裡長出了什麼？
                 </div>
             </div>
-            <div class="text-card">
-            </div>
-
-            <!-- Fullscreen Component: Local Opinions -->
-            <div style="height: 10vh;"></div>
         </div>
     </section>
 
@@ -691,89 +693,4 @@
             // 通用移動函式
             function move(pageX) {
                 const rect = container.getBoundingClientRect();
-                let x = pageX - rect.left - window.scrollX;
-                // 邊界檢查
-                if (x < 0) x = 0;
-                if (x > rect.width) x = rect.width;
-
-                const percent = (x / rect.width) * 100;
-
-                // 更新 CSS
-                overlay.style.width = percent + '%';
-                handle.style.left = percent + '%';
-            }
-
-            // 滑鼠事件
-            container.addEventListener('mousedown', () => isDragging = true);
-            window.addEventListener('mouseup', () => isDragging = false);
-            container.addEventListener('mousemove', (e) => {
-                if (isDragging) move(e.pageX);
-            });
-
-            // 手機觸控事件
-            container.addEventListener('touchstart', (e) => {
-                isDragging = true;
-                move(e.touches[0].pageX); // 點下去時就跳過去
-            });
-            window.addEventListener('touchend', () => isDragging = false);
-            container.addEventListener('touchmove', (e) => {
-                if (isDragging) move(e.touches[0].pageX);
-            });
-        });
-    </script>
-
-    <script>
-        function toggleSound() {
-            var video = document.getElementById("heroVideo");
-            var btnText = document.getElementById("soundText");
-            var btnIcon = document.getElementById("soundIcon");
-
-            if (video.muted) {
-                video.muted = false;
-                video.volume = 1.0;
-                btnText.innerText = "音效已開啟";
-                btnIcon.innerText = "🔊";
-            } else {
-                video.muted = true;
-                btnText.innerText = "開啟現場音效";
-                btnIcon.innerText = "🔇";
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const heroSection = document.getElementById('hero');
-            const video = document.getElementById('heroVideo');
-            const btnText = document.getElementById("soundText");
-            const btnIcon = document.getElementById("soundIcon");
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) {
-                        video.muted = true;
-                        btnText.innerText = "開啟現場音效";
-                        btnIcon.innerText = "🔇";
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            observer.observe(heroSection);
-        });
-
-        // --- Intersection Observer for Components Fade In ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const components = document.querySelectorAll('.fullscreen-comp-section');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, { threshold: 0.15 });
-
-            components.forEach(comp => observer.observe(comp));
-        });
-    </script>
-
-</body>
-
-</html>
+     

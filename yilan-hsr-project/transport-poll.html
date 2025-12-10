@@ -296,6 +296,11 @@
             </div>
         </div>
 
+        <button id="reset-btn" onclick="resetPoll()"
+            style="margin-top: 30px; background: transparent; border: 1px solid #444; color: #666; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8em;">
+            ↺ 重置投票 (測試用)
+        </button>
+
     </div>
 
     <script>
@@ -470,6 +475,10 @@
             if (key === 'train') return '🚆';
             if (key === 'hsr') return '🚄';
             return '🛵';
+        }
+        function resetPoll() {
+            localStorage.removeItem('yilan_user_voted');
+            location.reload();
         }
     </script>
 

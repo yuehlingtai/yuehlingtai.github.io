@@ -227,10 +227,17 @@
             box-sizing: border-box;
             opacity: 0;
             transition: opacity 0.3s ease;
+            max-width: none !important;
+            /* Force full width override */
         }
 
         .modal-overlay.active {
             display: flex;
+            opacity: 1;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
             opacity: 1;
         }
 
@@ -245,6 +252,12 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
             max-height: 90vh;
             overflow-y: auto;
+
+            /* Animation Initial State */
+            transform: scale(0.7);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Bouncy Pop */
         }
 
         .modal-close-btn {
@@ -305,42 +318,46 @@
         </ul>
 
         <button class="submit-btn" onclick="showResult()">看結果：在地人怎麼想？</button>
+    </div>
 
-        <!-- Modal 結構 -->
-        <div class="modal-overlay" id="result-modal">
-            <div class="modal-content">
-                <h3>Reality Check：真實的在地焦慮</h3>
-                <p style="color:#ccc; font-size:0.9em; margin-bottom:20px;">
-                    你的排序或許和他們不同。<br>根據前立委陳琬惠所做的在地民調，宜蘭鄉親最在乎的其實是...
-                </p>
+    <!-- Modal 結構 (Moved outside container) -->
+    <div class="modal-overlay" id="result-modal">
+        <div class="modal-content">
+            <h3>Reality Check：真實的在地焦慮</h3>
+            <p style="color:#ccc; font-size:0.9em; margin-bottom:20px;">
+                你的排序或許和他們不同。<br>根據前立委陳琬惠所做的在地民調，宜蘭鄉親最在乎的其實是...
+            </p>
 
-                <div class="chart-box">
-                    <div class="chart-title">📊 宜蘭在地民調結果</div>
-                    <div class="rank-row">
-                        <span class="rank-num">1</span>
-                        <span>💰 經濟發展 (工作機會)</span>
-                    </div>
-                    <div class="rank-row">
-                        <span class="rank-num">2</span>
-                        <span>🚄 交通便利</span>
-                    </div>
-                    <div class="rank-row">
-                        <span class="rank-num">3</span>
-                        <span>🏥 醫療照護</span>
-                    </div>
+            <div class="chart-box">
+                <div class="chart-title">📊 宜蘭在地民調結果</div>
+                <div class="rank-row">
+                    <span class="rank-num">1</span>
+                    <span>💰 經濟發展 (工作機會)</span>
                 </div>
-
-                <div class="analysis-text">
-                    <p>
-                        「我們要的是飯碗，不是只有週末回家的快車。」<br><br>
-                        許多人以為宜蘭最缺的是交通，但民調顯示，在地人更焦慮的是<span class="highlight">產業停滯與低薪問題</span>。然而，這條耗資 1800
-                        億的高鐵，除了把人載出去，真的能把產業載進來嗎？
-                    </p>
+                <div class="rank-row">
+                    <span class="rank-num">2</span>
+                    <span>🚄 交通便利</span>
                 </div>
-
-                <button class="modal-close-btn" onclick="closeResult()">返回調查</button>
+                <div class="rank-row">
+                    <span class="rank-num">3</span>
+                    <span>🏥 醫療照護</span>
+                </div>
             </div>
+
+            <div class="analysis-text">
+                <p>
+                    「我們要的是飯碗，不是只有週末回家的快車。」<br><br>
+                    許多人以為宜蘭最缺的是交通，但民調顯示，在地人更焦慮的是<span class="highlight">產業停滯與低薪問題</span>。然而，這條耗資 1800
+                    億的高鐵，除了把人載出去，真的能把產業載進來嗎？
+                </p>
+            </div>
+
+            <button class="modal-close-btn" onclick="closeResult()">返回調查</button>
         </div>
+    </div>
+
+    <!-- Modal 結構 -->
+
     </div>
 
     <script>
