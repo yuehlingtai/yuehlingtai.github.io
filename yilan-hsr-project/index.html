@@ -447,12 +447,12 @@
             }
 
             .comp-container {
-                height: 60vh;
+                height: 100%;
             }
         }
 
         .comp-container {
-            height: 60vh;
+            height: 100%;
         }
 
 
@@ -570,121 +570,437 @@
             </div>
         </div>
     </section>
-    <section class="scrolly-section">
-        <div class="sticky-background"><video class="bg-video" autoplay muted loop playsinline>
-                <source src="https://videos.pexels.com/video-files/2103099/2103099-hd_1920_1080_30fps.mp4"
-                    type="video/mp4">
-            </video></div>
-        <div class="scrolling-content" style="padding-top: 30vh;">
-            <div class="text-card">
-                <p><b>【引言】 1800 億的豪賭</b></p>
-                <p>宜蘭人盼了二十年，終於盼到高鐵延伸。官方宣稱這是打通東部任督二脈的萬靈丹，既能解決塞車，又能帶動科學園區。但在美好的藍圖下，這是不是一場「藥不對症」的豪賭？</p>
+
+    <!-- Fullscreen Component: Transport Evolution Timeline -->
+    <!-- Dynamic Transport Evolution Timeline (Vertical Scroll -> Horizontal Slide) -->
+    <style>
+        .evo-scroll-section {
+            height: 600vh;
+            /* Scrollable height */
+            position: relative;
+            z-index: 10;
+        }
+
+        .evo-sticky-wrapper {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .evo-track {
+            display: flex;
+            height: 100%;
+            width: 600vw;
+            /* 6 slides * 100vw */
+            will-change: transform;
+        }
+
+        .evo-slide {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .evo-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .evo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%);
+            z-index: 1;
+        }
+
+        .evo-content {
+            position: absolute;
+            bottom: 15%;
+            left: 10%;
+            z-index: 3;
+            max-width: 800px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease-out;
+        }
+
+        .evo-content.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .evo-year {
+            font-family: 'Oswald', sans-serif;
+            font-size: 8rem;
+            line-height: 1;
+            color: var(--accent);
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .evo-year span {
+            font-size: 2rem;
+            vertical-align: middle;
+            background: #fff;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .evo-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .evo-desc {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-left: 4px solid var(--accent);
+            backdrop-filter: blur(5px);
+        }
+
+        .film-strip {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background-image: linear-gradient(90deg, #000 50%, transparent 50%);
+            background-size: 60px 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .film-strip.top {
+            top: 0;
+            border-bottom: 2px solid #fff;
+        }
+
+        .film-strip.bottom {
+            bottom: 0;
+            border-top: 2px solid #fff;
+        }
+    </style>
+
+    <section class="evo-scroll-section">
+        <div class="evo-sticky-wrapper">
+            <div class="evo-track" id="evoTrack">
+                <!-- 1895 -->
+                <div class="evo-slide">
+                    <div class="film-strip top"></div>
+                    <img src="https://images.unsplash.com/photo-1440557653067-160b72c93847?q=80&w=2600" class="evo-bg"
+                        style="filter: grayscale(100%) contrast(1.2);">
+                    <div class="evo-content">
+                        <span class="evo-year">1895</span>
+                        <h2 class="evo-title">淡蘭古道</h2>
+                        <p class="evo-desc">最早的連結。先民翻山越嶺，靠著雙腳走出這條連結台北與宜蘭的命脈。那是個時間很慢，但每一步都很踏實的年代。</p>
+                    </div>
+                    <div class="film-strip bottom"></div>
+                </div>
+                <!-- 1924 -->
+                <div class="evo-slide">
+                    <div class="film-strip top"></div>
+                    <img src="https://images.unsplash.com/photo-1596638708316-c1186e88122c?q=80&w=2070" class="evo-bg"
+                        style="object-position: center bottom; filter: sepia(0.6) contrast(1.1);">
+                    <div class="evo-content">
+                        <span class="evo-year">1924</span>
+                        <h2 class="evo-title">臺鐵宜蘭線</h2>
+                        <p class="evo-desc">蒸汽劃破寧靜。鐵路通車，讓宜蘭不再是後山孤島。那一年，火車的鳴笛聲，宣告了工業化交通時代的來臨。</p>
+                    </div>
+                    <div class="film-strip bottom"></div>
+                </div>
+                <!-- 1971 -->
+                <div class="evo-slide">
+                    <div class="film-strip top"></div>
+                    <img src="https://images.unsplash.com/photo-1464219789935-c2d9d9aba644?q=80&w=2070" class="evo-bg">
+                    <div class="evo-content">
+                        <span class="evo-year">1971</span>
+                        <h2 class="evo-title">台 9 線 (北宜)</h2>
+                        <p class="evo-desc">九彎十八拐的記憶。公路開通，帶來了客運與貨車，也留下了無數暈車與驚險的回憶。這是宜蘭人前往台北打拚的必經之路。</p>
+                    </div>
+                    <div class="film-strip bottom"></div>
+                </div>
+                <!-- 1979 -->
+                <div class="evo-slide">
+                    <div class="film-strip top"></div>
+                    <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=2070" class="evo-bg">
+                    <div class="evo-content">
+                        <span class="evo-year">1979</span>
+                        <h2 class="evo-title">台 2 線</h2>
+                        <p class="evo-desc">沿著海岸線奔馳。濱海公路的拓寬，分擔了山路的壓力。砂石車與海風並行，是那個經濟起飛年代的獨特風景。</p>
+                    </div>
+                    <div class="film-strip bottom"></div>
+                </div>
+                <!-- 2006 -->
+                <div class="evo-slide">
+                    <div class="film-strip top"></div>
+                    <img src="https://images.unsplash.com/photo-1545620956-f682bb7b7746?q=80&w=2073" class="evo-bg">
+                    <div class="evo-content">
+                        <span class="evo-year">2006</span>
+                        <h2 class="evo-title">國道 5 號</h2>
+                        <p class="evo-desc">天塹變通途。雪山隧道的貫通，將時空距離縮短至 50 分鐘。臺北客湧入，農舍變民宿，宜蘭從此改變了樣貌。</p>
+                    </div>
+                    <div class="film-strip bottom"></div>
+                </div>
+                <!-- 2036 -->
+                <div class="evo-slide">
+                    <div class="film-strip top"></div>
+                    <img src="https://images.unsplash.com/photo-1517415278153-e91b490dc679?q=80&w=2069" class="evo-bg">
+                    <div class="evo-overlay"
+                        style="background: linear-gradient(to top, rgba(231, 76, 60, 0.4) 0%, rgba(0,0,0,0.6) 100%);">
+                    </div>
+                    <div class="evo-content">
+                        <span class="evo-year">2036 <span>目標</span></span>
+                        <h2 class="evo-title">宜蘭高鐵</h2>
+                        <p class="evo-desc">失速的拼圖？12 分鐘到南港的極速夢想。但在這條昂貴的軌道終點，我們迎接的會是繁榮的都會，還是被房價淹沒的故鄉？</p>
+                    </div>
+                    <div class="film-strip bottom"></div>
+                </div>
             </div>
-            <div class="text-card">
-                <h2>Part 1. 系統的代價：被犧牲的台鐵</h2><br>
-                <h3>Q1：高鐵進場，台鐵退場？</h3>
-                <p>採訪台鐵工會理事後發現，高鐵搶走高價值的長途客源後，台鐵勢必減班或轉型。對於付不起高鐵票的在地通勤族，交通權益是否反而受損？</p>
-                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 30px 0;">
-                <h3 style="text-align: center; color: var(--accent);">👇 您的選擇會是什麼？</h3>
+            <!-- Progress Bar -->
+            <div
+                style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 200px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px;">
+                <div id="evoProgress" style="width: 0%; height: 100%; background: var(--accent); border-radius: 2px;">
+                </div>
             </div>
         </div>
     </section>
-    < !-- Fullscreen Component: Transport Poll -->
-        < !-- Fullscreen Component: Transport Poll -->
-            <section class="fullscreen-comp-section">
-                <div class="comp-sticky-wrapper"><iframe src="transport-poll.html?v=4"
-                        class="fullscreen-iframe"></iframe></div>
-            </section>
-            <section class="scrolly-section">
-                <div class="sticky-background"><img
-                        src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop"
-                        class="bg-video" style="object-position: center bottom;"></div>
-                <div class="scrolling-content">
-                    <div class="text-card">
-                        <h2>Part 2. 土地的算盤</h2>
-                        <p>建設是為了交通還是房地產？選址在縣政中心，是為了交通轉乘便利，還是為了炒熱周邊荒涼的重劃區？</p>
-                    </div>
+
+    <!-- Cinematic Intro & Part 1 Redesign -->
+    <style>
+        .zoom-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: slowZoom 30s infinite alternate ease-in-out;
+        }
+
+        @keyframes slowZoom {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.2);
+            }
+        }
+
+        .dark-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
+            z-index: 1;
+        }
+
+        .cinematic-intro {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: #fff;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 1);
+        }
+
+        .cinematic-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #aaa);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 5px;
+        }
+
+        .cinematic-text {
+            font-size: 1.2rem;
+            max-width: 800px;
+            line-height: 1.8;
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 50px;
+            border-radius: 20px;
+            max-width: 700px;
+            margin: 50vh auto 20vh;
+            /* Layout positioning */
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transform: translateY(50px);
+            opacity: 0;
+            animation: slideUpFade 1s forwards;
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
+        }
+
+        @keyframes slideUpFade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <section class="scrolly-section">
+        <div class="sticky-background">
+            <div class="dark-gradient"></div>
+            <img src="https://images.unsplash.com/photo-1474487548417-781cb714c22d?q=80&w=2070" class="zoom-bg"
+                style="object-position: center;">
+        </div>
+
+        <div class="scrolling-content">
+            <!-- Cinematic Introduction -->
+            <div class="cinematic-intro">
+                <div
+                    style="font-size: 1.2rem; color: var(--accent); letter-spacing: 3px; margin-bottom: 10px; font-weight: bold;">
+                    引言</div>
+                <h2 class="cinematic-title">1800 億的豪賭</h2>
+                <div class="cinematic-text">
+                    <p style="margin-bottom: 20px;">2025年8月，「高鐵延伸宜蘭計畫」環評通過，<br>規劃了近20年的北宜直鐵確定不會實現。</p>
+                    <p style="font-size: 1rem; opacity: 0.8;">從北宜直鐵到高鐵延伸，這是一場關於速度、效率與土地正義的角力。</p>
                 </div>
-            </section>
-            < !-- Fullscreen Component: Yilan Value Survey -->
-                < !-- Fullscreen Component: Yilan Value Survey -->
-                    <section class="fullscreen-comp-section">
-                        <div class="comp-sticky-wrapper"><iframe src="yilan-value-survey.html?v=4"
-                                class="fullscreen-iframe"></iframe></div>
-                    </section>
-                    <section class="scrolly-section">
-                        <div class="sticky-background">
-                            < !-- Repeat the background image for continuity if needed, or leave transparent to show
+                <div style="font-size: 2rem; opacity: 0.5; animation: bounce 2s infinite;">↓</div>
+            </div>
+
+            <!-- Part 1 Glass Panel -->
+            <div class="glass-panel">
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Part 1. 系統的代價</h2>
+                <h3 style="color: var(--accent); margin-bottom: 20px;">Q1：高鐵進場，台鐵退場？</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px;">
+                    早在2006年，政府即為了提升東部的交通效率，推動使用臺鐵系統的北宜直鐵方案。期間面臨路線規劃穿越翡翠水庫集水區，導致環評程序受阻...
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    採訪台鐵工會理事後發現，高鐵搶走高價值的長途客源後，台鐵勢必減班或轉型。對於付不起高鐵票的在地通勤族，交通權益是否反而受損？
+                </p>
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 30px 0;">
+                <h3 style="text-align: center; color: var(--accent);">👇 您的選擇會是什麼？</h3>
+            </div>
+
+            <div style="height: 20vh;"></div> <!-- Spacer -->
+        </div>
+    </section>
+    <!-- Fullscreen Component: Transport Poll -->
+    <!-- Fullscreen Component: Transport Poll -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper"><iframe src="transport-poll.html?v=4" class="fullscreen-iframe"></iframe></div>
+    </section>
+    <section class="scrolly-section">
+        <div class="sticky-background"><img
+                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop"
+                class="bg-video" style="object-position: center bottom;"></div>
+        <div class="scrolling-content">
+            <div class="text-card">
+                <h2>Part 2. 土地的算盤</h2>
+                <p>建設是為了交通還是房地產？選址在縣政中心，是為了交通轉乘便利，還是為了炒熱周邊荒涼的重劃區？</p>
+            </div>
+        </div>
+    </section>
+    <!-- Fullscreen Component: Yilan Value Survey -->
+    <!-- Fullscreen Component: Yilan Value Survey -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper"><iframe src="yilan-value-survey.html?v=4" class="fullscreen-iframe"></iframe>
+        </div>
+    </section>
+    <section class="scrolly-section">
+        <div class="sticky-background">
+            <!-- Repeat the background image for continuity if needed, or leave transparent to show
                                 previous sticky? Scrollytelling usually needs a background for each section if they are
                                 distinct. Let's reuse the image from Part 2 start -->
-                                <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop"
-                                    class="bg-video" style="object-position: center bottom;">
-                        </div>
-                        <div class="scrolling-content">
-                            <div class="text-card">
-                                <h3>關鍵證據：瘋狂的農地</h3>
-                                <p>我們調閱了實價登錄資料，發現就在高鐵站址定案的前後（110年底至111年初），農地價格發生了劇烈的變化。</p>
-                                <p>地板價消失了。高鐵還沒蓋，地價已經先搭上高鐵。</p>
-                            </div>
-                        </div>
-                    </section>
-                    < !-- Fullscreen Component: Land Price Chart -->
-                        < !-- Fullscreen Component: Land Price Chart -->
-                            <section class="fullscreen-comp-section">
-                                <div class="comp-sticky-wrapper"><iframe src="land-price-chart.html?v=4"
-                                        class="fullscreen-iframe"></iframe></div>
-                            </section>
-                            <section class="scrolly-section" style="z-index: 10;">
-                                <div class="sticky-background"><iframe src="land-price-map.html"
-                                        class="sticky-map-iframe"></iframe></div>
-                                <div class="scrolling-content">
-                                    <div class="map-hint-card">
-                                        <h3>☝️ 地價風暴地圖</h3>
-                                        <p style="margin: 0; font-size: 0.95rem;">請點擊地圖上的紅點，查看 110年與
-                                            111年的漲幅。<br>(繼續往下滑動以閱讀下一章) </p>
-                                    </div>
-                                </div>
-                            </section>
-                            <section class="scrolly-section">
-                                <div class="sticky-background"><img
-                                        src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832"
-                                        class="bg-video" style="object-position: center bottom;"></div>
-                                <div class="scrolling-content">
-                                    <div class="text-card">
-                                        <h2>Part 3. 土地的迷思</h2><br>
-                                        <h3>Q2：從「百萬人流」到「八卦陣空城」</h3>
-                                        <p>以「支援科學園區」為名，行「擴大都市計畫」之實。顯示當年規劃的宏大願景，對比今日大片閒置的草地與零星的別墅。</p>
-                                        <p>如果連舊的園區都填不滿，高鐵帶來的這個「新特區」，會不會只是把泡沫吹得更大？</p>
-                                    </div>
-                                    <div class="text-card"></div>
-                                    < !-- Fullscreen Component: Local Opinions -->
-                                        <div style="height: 10vh;"></div>
-                                </div>
-                            </section>
-                            < !-- Fullscreen Component: Image Slider -->
-                                <section class="fullscreen-comp-section">
-                                    <div class="comp-sticky-wrapper">
-                                        <div class="full-width-slider-wrapper">
-                                            <div class="comp-container" id="compSlider"><img src="bagua-2025.jpg"
-                                                    class="comp-img comp-img-after" alt="2025"><span
-                                                    class="comp-label comp-label-after">2025 現況</span>
-                                                <div class="comp-overlay"><img src="bagua-2005.jpg"
-                                                        class="comp-img comp-img-before" alt="2005"><span
-                                                        class="comp-label comp-label-before">2005 規劃初期</span></div>
-                                                <div class="comp-handle"><svg viewBox="0 0 24 24" width="24" height="24"
-                                                        stroke="currentColor" stroke-width="2" fill="none"
-                                                        stroke-linecap="round" stroke-linejoin="round"
-                                                        style="color: white;">
-                                                        <polyline points="15 18 9 12 15 6"></polyline>
-                                                        <polyline points="9 18 15 12 9 6"></polyline>
-                                                    </svg></div>
-                                                <div class="mosquito-swarm">
-                                                    <div class="mosquito" style="top:30%; left:20%;">🦟</div>
-                                                    <div class="mosquito" style="top:50%; left:60%;">🦟</div>
-                                                    <div class="mosquito" style="top:70%; left:40%;">🦟</div>
-                                                </div>
-                                            </div>
-                                            <div style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); 
+            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop"
+                class="bg-video" style="object-position: center bottom;">
+        </div>
+        <div class="scrolling-content">
+            <div class="text-card">
+                <h3>關鍵證據：瘋狂的農地</h3>
+                <p>我們調閱了實價登錄資料，發現就在高鐵站址定案的前後（110年底至111年初），農地價格發生了劇烈的變化。</p>
+                <p>地板價消失了。高鐵還沒蓋，地價已經先搭上高鐵。</p>
+            </div>
+        </div>
+    </section>
+    <!-- Fullscreen Component: Land Price Chart -->
+    <!-- Fullscreen Component: Land Price Chart -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper"><iframe src="land-price-chart.html?v=4" class="fullscreen-iframe"></iframe>
+        </div>
+    </section>
+    <section class="scrolly-section" style="z-index: 10;">
+        <div class="sticky-background"><iframe src="land-price-map.html" class="sticky-map-iframe"></iframe></div>
+        <div class="scrolling-content">
+            <div class="map-hint-card">
+                <h3>☝️ 地價風暴地圖</h3>
+                <p style="margin: 0; font-size: 0.95rem;">請點擊地圖上的紅點，查看 110年與
+                    111年的漲幅。<br>(繼續往下滑動以閱讀下一章) </p>
+            </div>
+        </div>
+    </section>
+    <section class="scrolly-section">
+        <div class="sticky-background"><img
+                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832" class="bg-video"
+                style="object-position: center bottom;"></div>
+        <div class="scrolling-content">
+            <div class="text-card">
+                <h2>Part 3. 土地的迷思</h2><br>
+                <h3>Q2：從「百萬人流」到「八卦陣空城」</h3>
+                <p>以「支援科學園區」為名，行「擴大都市計畫」之實。顯示當年規劃的宏大願景，對比今日大片閒置的草地與零星的別墅。</p>
+                <p>如果連舊的園區都填不滿，高鐵帶來的這個「新特區」，會不會只是把泡沫吹得更大？</p>
+            </div>
+            <div class="text-card"></div>
+            <!-- Fullscreen Component: Local Opinions -->
+            <div style="height: 10vh;"></div>
+        </div>
+    </section>
+    <!-- Fullscreen Component: Image Slider -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper">
+            <div class="full-width-slider-wrapper">
+                <div class="comp-container" id="compSlider"><img src="bagua-2025.jpg" class="comp-img comp-img-after"
+                        alt="2025"><span class="comp-label comp-label-after">2025 現況</span>
+                    <div class="comp-overlay"><img src="bagua-2005.jpg" class="comp-img comp-img-before"
+                            alt="2005"><span class="comp-label comp-label-before">2005 規劃初期</span></div>
+                    <div class="comp-handle"><svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
+                            stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                            style="color: white;">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg></div>
+                    <div class="mosquito-swarm">
+                        <div class="mosquito" style="top:30%; left:20%;">🦟</div>
+                        <div class="mosquito" style="top:50%; left:60%;">🦟</div>
+                        <div class="mosquito" style="top:70%; left:40%;">🦟</div>
+                    </div>
+                </div>
+                <div style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); 
  background: rgba(0, 0, 0, 0.7);
         padding: 5px 15px;
         border-radius: 20px;
@@ -693,186 +1009,232 @@
         pointer-events: none;
         z-index: 10;
         ">
-                                                ▲ 左右拖動拉桿，看看 20 年來這裡長出了什麼？ </div>
-                                        </div>
-                                    </div>
-                                </section>
-                                <section class="fullscreen-comp-section">
-                                    <div class="comp-sticky-wrapper"><iframe src="local-opinions.html?v=4"
-                                            class="fullscreen-iframe"></iframe></div>
-                                </section>
-                                <section class="scrolly-section">
-                                    <div class="sticky-background"><img
-                                            src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?q=80&w=2874"
-                                            class="bg-video" style="object-position: center;"></div>
-                                    <div class="scrolling-content">
-                                        <div class="text-card" style="margin-bottom: 10vh;">
-                                            <h2>在地與體制的真實告白</h2>
-                                            <p>在漂亮的藍圖之外，這些實際生活在這裡的人，看到了什麼隱憂？</p>
-                                        </div>
-                                        <div class="expert-quote-container">
-                                            < !-- Expert 1: Zhang X -->
-                                                <div class="expert-card">
-                                                    <div class="expert-avatar"><img
-                                                            src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairSides&accessoriesType=Prescription02&hairColor=SilverGray&facialHairType=MoustacheMagnum&clotheType=ShirtCrewNeck&eyeType=Squint&eyebrowType=Angry&mouthType=Serious"
-                                                            alt="張先生"></div>
-                                                    <div class="expert-content">
-                                                        <div class="expert-text">
-                                                            道路是規劃區裡面的血管，血管不通，彎彎折折一定塞住什麼病都來了。縣政中心活生生的例子，三十年發展不起來，因為進去一定迷路，八卦陣的設計讓縣政中心沒有一條路是直的。高鐵特區的道路規劃一定要是棋盤式才可以。
-                                                        </div>
-                                                        <div class="expert-author">張先生 <span class="expert-role">宜蘭移居 20
-                                                                年居民</span></div>
-                                                    </div>
-                                                </div>
-                                                < !-- Expert 2: Specialist -->
-                                                    <div class="expert-card">
-                                                        <div class="expert-avatar"><img
-                                                                src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraight&accessoriesType=Kurt&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Happy&eyebrowType=Default&mouthType=Default"
-                                                                alt="前縣府專員"></div>
-                                                        <div class="expert-content">
-                                                            <div class="expert-text">
-                                                                縣政中心使用項目限制太多了，它只能純住宅，純住宅裡面生活機能、其他吃喝玩樂都沒有。管制嚴很嚴生活機能又不如市區，人就不會來所以現在變蚊子館。
-                                                            </div>
-                                                            <div class="expert-author">匿名受訪者 <span
-                                                                    class="expert-role">前宜蘭縣府重劃科專員</span></div>
-                                                        </div>
-                                                    </div>
-                                        </div>
-                                        <div style="height: 30vh;"></div>
-                                    </div>
-                                </section>
-                                <section class="scrolly-section">
-                                    <div class="sticky-background"><img
-                                            src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832"
-                                            class="bg-video" style="object-position: center bottom;"></div>
-                                    <div class="scrolling-content">
-                                        <div class="text-card"
-                                            style="text-align: center; border-left: none; border-top: 5px solid var(--accent); margin-bottom: 20vh;">
-                                            <h2>結語：我們要的是發展，還是幻覺？</h2><br>
-                                            <p>宜蘭需要交通改善，也需要產業升級。但把所有資源都押注在一條「載人高鐵」上，而忽視貨運物流與在地轉乘，可能最後只換來炒高的地皮，與依舊塞車的國道五號。
-                                            </p>
-                                            <p>這條耗資 1800 億的鐵路，究竟是為了讓宜蘭人回家的路更近，還是為了把炒房的熱錢載進來？</p>
-                                            <p
-                                                style="margin-top: 60px; font-size: 0.9rem; opacity: 0.6; border-top: 1px solid #555; padding-top: 20px;">
-                                                Copyright © 2025 國立臺灣大學新聞研究所 報導團隊<br>資料來源：內政部實價登錄、交通部鐵道局、Google Earth
-                                            </p>
-                                        </div>
-                                        <div style="height: 10vh;"></div>
-                                    </div>
-                                </section>
-                                <script> // ... (保留原本的 toggleSound 腳本) ...
+                    ▲ 左右拖動拉桿，看看 20 年來這裡長出了什麼？ </div>
+            </div>
+        </div>
+    </section>
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper"><iframe src="local-opinions.html?v=4" class="fullscreen-iframe"></iframe></div>
+    </section>
+    <section class="scrolly-section">
+        <div class="sticky-background"><img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?q=80&w=2874"
+                class="bg-video" style="object-position: center;"></div>
+        <div class="scrolling-content">
+            <div class="text-card" style="margin-bottom: 10vh;">
+                <h2>在地與體制的真實告白</h2>
+                <p>在漂亮的藍圖之外，這些實際生活在這裡的人，看到了什麼隱憂？</p>
+            </div>
+            <div class="expert-quote-container">
+                <!-- Expert 1: Zhang X -->
+                <div class="expert-card">
+                    <div class="expert-avatar"><img
+                            src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairSides&accessoriesType=Prescription02&hairColor=SilverGray&facialHairType=MoustacheMagnum&clotheType=ShirtCrewNeck&eyeType=Squint&eyebrowType=Angry&mouthType=Serious"
+                            alt="張先生"></div>
+                    <div class="expert-content">
+                        <div class="expert-text">
+                            道路是規劃區裡面的血管，血管不通，彎彎折折一定塞住什麼病都來了。縣政中心活生生的例子，三十年發展不起來，因為進去一定迷路，八卦陣的設計讓縣政中心沒有一條路是直的。高鐵特區的道路規劃一定要是棋盤式才可以。
+                        </div>
+                        <div class="expert-author">張先生 <span class="expert-role">宜蘭移居 20
+                                年居民</span></div>
+                    </div>
+                </div>
+                <!-- Expert 2: Specialist -->
+                <div class="expert-card">
+                    <div class="expert-avatar"><img
+                            src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraight&accessoriesType=Kurt&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Happy&eyebrowType=Default&mouthType=Default"
+                            alt="前縣府專員"></div>
+                    <div class="expert-content">
+                        <div class="expert-text">
+                            縣政中心使用項目限制太多了，它只能純住宅，純住宅裡面生活機能、其他吃喝玩樂都沒有。管制嚴很嚴生活機能又不如市區，人就不會來所以現在變蚊子館。
+                        </div>
+                        <div class="expert-author">匿名受訪者 <span class="expert-role">前宜蘭縣府重劃科專員</span></div>
+                    </div>
+                </div>
+            </div>
+            <div style="height: 30vh;"></div>
+        </div>
+    </section>
+    <section class="scrolly-section">
+        <div class="sticky-background"><img
+                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832" class="bg-video"
+                style="object-position: center bottom;"></div>
+        <div class="scrolling-content">
+            <div class="text-card"
+                style="text-align: center; border-left: none; border-top: 5px solid var(--accent); margin-bottom: 20vh;">
+                <h2>我們要的是發展，還是幻覺？</h2><br>
+                <p><b>宜蘭需要交通改善，也需要產業升級。但把所有資源都押注在一條「載人高鐵」上，而忽視貨運物流與在地轉乘，可能最後只換來炒高的地皮，與依舊塞車的國道五號。</b></p>
+                <p style="text-align: left;">
+                    高鐵延伸宜蘭案旨在改善東部交通，緩解國五嚴重塞車問題，並紓緩台鐵東部段經常「一票難求」現象。預計2036年竣工、造價3522億的高鐵宜蘭新站，縮短了北宜之間的交通時間。然而，宜蘭新站設於縣政中心東側，未來旅客到站後接駁轉乘至宜蘭市區、各觀光景點是一大挑戰。
+                </p>
+                <p style="text-align: left;">
+                    同時，高鐵延伸宜蘭不僅可能無法改善國五塞車現況，還恐對台鐵營運造成衝擊。因為宜蘭高鐵將移轉原先搭乘台鐵、客運的旅客，自駕民眾仍會選擇開車前往東部。台鐵在人力調度不足、票箱收入下降的情況，估計將造成580億的營收虧損。
+                </p>
+                <p style="text-align: left;">
+                    十年後才完工的宜蘭高鐵，已可見預定地周遭地價悄悄上漲。宜蘭人引頸期盼「高鐵特區」能刺激產業和經濟發展，不過也有在地民眾擔心，若特定區不規劃完善、改善道路設計，可能成為下一個縣政中心淪為「蚊子館」。
+                </p>
+                <p
+                    style="margin-top: 60px; font-size: 0.9rem; opacity: 0.6; border-top: 1px solid #555; padding-top: 20px;">
+                    Copyright © 2025 國立臺灣大學新聞研究所 報導團隊<br>資料來源：內政部實價登錄、交通部鐵道局、Google Earth
+                </p>
+            </div>
+            <div style="height: 10vh;"></div>
+        </div>
+    </section>
+    <script> // ... (保留原本的 toggleSound 腳本) ...
 
-                                    // --- 衛星圖滑動功能 (CodePen Style) ---
-                                    document.addEventListener("DOMContentLoaded", function () {
-                                        const container = document.getElementById('compSlider');
-                                        if (!container) return;
+        // --- Transport Evolution Scroll Logic ---
+        document.addEventListener('scroll', () => {
+            const section = document.querySelector('.evo-scroll-section');
+            const track = document.getElementById('evoTrack');
+            const progress = document.getElementById('evoProgress');
 
-                                        const overlay = container.querySelector('.comp-overlay');
-                                        const handle = container.querySelector('.comp-handle');
-                                        let isDragging = false;
+            if (!section || !track) return;
 
-                                        // 初始化位置 (50%)
-                                        const initialPos = 50;
-                                        overlay.style.width = initialPos + '%';
-                                        handle.style.left = initialPos + '%';
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            const scrollY = window.scrollY;
 
-                                        // 通用移動函式
-                                        function move(pageX) {
-                                            const rect = container.getBoundingClientRect();
-                                            let x = pageX - rect.left - window.scrollX;
-                                            // 邊界檢查
-                                            if (x < 0) x = 0;
-                                            if (x > rect.width) x = rect.width;
+            // Calculate how far we are into the section
+            // Start moving when section top hits top of viewport
+            let percentage = (scrollY - sectionTop) / (sectionHeight - viewportHeight);
 
-                                            const percent = (x / rect.width) * 100;
+            // Clamp between 0 and 1
+            if (percentage < 0) percentage = 0;
+            if (percentage > 1) percentage = 1;
 
-                                            // 更新 CSS
-                                            overlay.style.width = percent + '%';
-                                            handle.style.left = percent + '%';
-                                        }
+            // Move the track: Total width to move = (track width - viewport width)
+            // Track width is 600vw, so we move 500vw max
+            const moveX = -(percentage * 500); // 5 slides worth of movement
+            track.style.transform = `translateX(${moveX}vw)`;
 
-                                        // 滑鼠事件
-                                        container.addEventListener('mousedown', () => isDragging = true);
-                                        window.addEventListener('mouseup', () => isDragging = false);
+            if (progress) progress.style.width = `${percentage * 100}%`;
 
-                                        container.addEventListener('mousemove', (e) => {
-                                            if (isDragging) move(e.pageX);
-                                        });
+            // Trigger animations for content based on percentage
+            // 0-0.16 (Slide 1), 0.16-0.33 (Slide 2), etc.
+            const contents = document.querySelectorAll('.evo-content');
+            const currentIndex = Math.floor(percentage * 6); // 6 slides
 
-                                        // 手機觸控事件
-                                        container.addEventListener('touchstart', (e) => {
-                                            isDragging = true;
-                                            move(e.touches[0].pageX); // 點下去時就跳過去
-                                        });
-                                        window.addEventListener('touchend', () => isDragging = false);
+            contents.forEach((content, index) => {
+                if (index === currentIndex) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        });
 
-                                        container.addEventListener('touchmove', (e) => {
-                                            if (isDragging) move(e.touches[0].pageX);
-                                        });
-                                    });
+        // --- 衛星圖滑動功能 (CodePen Style) ---
+        document.addEventListener("DOMContentLoaded", function () {
+            const container = document.getElementById('compSlider');
+            if (!container) return;
 
-                                </script>
-                                <script>function toggleSound() {
-                                        var video = document.getElementById("heroVideo");
-                                        var btnText = document.getElementById("soundText");
-                                        var btnIcon = document.getElementById("soundIcon");
+            const overlay = container.querySelector('.comp-overlay');
+            const handle = container.querySelector('.comp-handle');
+            let isDragging = false;
 
-                                        if (video.muted) {
-                                            video.muted = false;
-                                            video.volume = 1.0;
-                                            btnText.innerText = "音效已開啟";
-                                            btnIcon.innerText = "🔊";
-                                        }
+            // 初始化位置 (50%)
+            const initialPos = 50;
+            overlay.style.width = initialPos + '%';
+            handle.style.left = initialPos + '%';
 
-                                        else {
-                                            video.muted = true;
-                                            btnText.innerText = "開啟現場音效";
-                                            btnIcon.innerText = "🔇";
-                                        }
-                                    }
+            // 通用移動函式
+            function move(pageX) {
+                const rect = container.getBoundingClientRect();
+                let x = pageX - rect.left - window.scrollX;
+                // 邊界檢查
+                if (x < 0) x = 0;
+                if (x > rect.width) x = rect.width;
 
-                                    document.addEventListener('DOMContentLoaded', () => {
-                                        const heroSection = document.getElementById('hero');
-                                        const video = document.getElementById('heroVideo');
-                                        const btnText = document.getElementById("soundText");
-                                        const btnIcon = document.getElementById("soundIcon");
+                const percent = (x / rect.width) * 100;
 
-                                        const observer = new IntersectionObserver((entries) => {
-                                            entries.forEach(entry => {
-                                                if (!entry.isIntersecting) {
-                                                    video.muted = true;
-                                                    btnText.innerText = "開啟現場音效";
-                                                    btnIcon.innerText = "🔇";
-                                                }
-                                            });
-                                        }
+                // 更新 CSS
+                overlay.style.width = percent + '%';
+                handle.style.left = percent + '%';
+            }
 
-                                            , {
-                                                threshold: 0.1
-                                            });
+            // 滑鼠事件
+            container.addEventListener('mousedown', () => isDragging = true);
+            window.addEventListener('mouseup', () => isDragging = false);
 
-                                        observer.observe(heroSection);
-                                    });
+            container.addEventListener('mousemove', (e) => {
+                if (isDragging) move(e.pageX);
+            });
 
-                                    // --- Intersection Observer for Components Fade In ---
-                                    document.addEventListener('DOMContentLoaded', () => {
-                                        const components = document.querySelectorAll('.fullscreen-comp-section');
+            // 手機觸控事件
+            container.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                move(e.touches[0].pageX); // 點下去時就跳過去
+            });
+            window.addEventListener('touchend', () => isDragging = false);
 
-                                        const observer = new IntersectionObserver((entries) => {
-                                            entries.forEach(entry => {
-                                                if (entry.isIntersecting) {
-                                                    entry.target.classList.add('visible');
-                                                }
-                                            });
-                                        }
+            container.addEventListener('touchmove', (e) => {
+                if (isDragging) move(e.touches[0].pageX);
+            });
+        });
 
-                                            , {
-                                                threshold: 0.15
-                                            });
+    </script>
+    <script>function toggleSound() {
+            var video = document.getElementById("heroVideo");
+            var btnText = document.getElementById("soundText");
+            var btnIcon = document.getElementById("soundIcon");
 
-                                        components.forEach(comp => observer.observe(comp));
-                                    });
-                                </script>
+            if (video.muted) {
+                video.muted = false;
+                video.volume = 1.0;
+                btnText.innerText = "音效已開啟";
+                btnIcon.innerText = "🔊";
+            }
+
+            else {
+                video.muted = true;
+                btnText.innerText = "開啟現場音效";
+                btnIcon.innerText = "🔇";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const heroSection = document.getElementById('hero');
+            const video = document.getElementById('heroVideo');
+            const btnText = document.getElementById("soundText");
+            const btnIcon = document.getElementById("soundIcon");
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        video.muted = true;
+                        btnText.innerText = "開啟現場音效";
+                        btnIcon.innerText = "🔇";
+                    }
+                });
+            }
+
+                , {
+                    threshold: 0.1
+                });
+
+            observer.observe(heroSection);
+        });
+
+        // --- Intersection Observer for Components Fade In ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const components = document.querySelectorAll('.fullscreen-comp-section');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }
+
+                , {
+                    threshold: 0.15
+                });
+
+            components.forEach(comp => observer.observe(comp));
+        });
+    </script>
 </body>
 
 </html>

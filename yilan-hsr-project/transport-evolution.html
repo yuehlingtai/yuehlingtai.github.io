@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宜蘭交通世代</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;900&family=Oswald:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Noto Serif TC', serif;
+            overflow: hidden;
+            /* Hide body scroll, we scroll the container */
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Horizontal Scroll Container */
+        .evolution-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            overflow-x: scroll;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+
+            /* Hide Scrollbar */
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .evolution-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Individual Era Slide */
+        .era-slide {
+            flex: 0 0 100vw;
+            height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Image */
+        .era-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        /* Overlay Gradient */
+        .era-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%);
+            z-index: 1;
+        }
+
+        /* Film Strip Effect (Top/Bottom) */
+        .film-strip {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background-image: linear-gradient(90deg, #000 50%, transparent 50%);
+            background-size: 60px 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .film-strip.top {
+            top: 0;
+            border-bottom: 2px solid #fff;
+        }
+
+        .film-strip.bottom {
+            bottom: 0;
+            border-top: 2px solid #fff;
+        }
+
+        /* Content */
+        .era-content {
+            position: absolute;
+            bottom: 15%;
+            left: 10%;
+            z-index: 3;
+            max-width: 80%;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 1s forwards 0.5s;
+        }
+
+        .era-year {
+            font-family: 'Oswald', sans-serif;
+            font-size: 8rem;
+            line-height: 1;
+            color: #e74c3c;
+            /* Accent color */
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .era-year span {
+            /* Small "Target" label for 2036 */
+            font-size: 2rem;
+            vertical-align: middle;
+            background: #fff;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .era-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .era-desc {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            line-height: 1.6;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-left: 4px solid #e74c3c;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Navigation Hint */
+        .scroll-hint {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.5);
+            animation: pulse 2s infinite;
+            z-index: 10;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            letter-spacing: 5px;
+            pointer-events: none;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: translateY(-50%) translateX(0);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: translateY(-50%) translateX(10px);
+            }
+        }
+
+        /* Specific Slide Tweaks */
+        .era-slide:nth-child(1) .era-bg {
+            filter: grayscale(100%) contrast(1.2);
+        }
+
+        /* Old times */
+        .era-slide:nth-child(2) .era-bg {
+            filter: sepia(0.6) contrast(1.1);
+        }
+
+        /* Old Train */
+    </style>
+</head>
+
+<body>
+    <div class="scroll-hint">➤ 往右滑動探索歷史</div>
+
+    <div class="evolution-container">
+        <!-- 1895: 淡蘭古道 -->
+        <div class="era-slide">
+            <div class="film-strip top"></div>
+            <img src="https://images.unsplash.com/photo-1440557653067-160b72c93847?q=80&w=2600" class="era-bg" alt="古道">
+
+            <div class="era-content">
+                <span class="era-year">1895</span>
+                <h2 class="era-title">淡蘭古道</h2>
+                <p class="era-desc">
+                    最早的連結。先民翻山越嶺，靠著雙腳走出這條連結台北與宜蘭的命脈。那是個時間很慢，但每一步都很踏實的年代。
+                </p>
+            </div>
+            <div class="film-strip bottom"></div>
+        </div>
+
+        <!-- 1924: 台鐵宜蘭線 -->
+        <div class="era-slide">
+            <div class="film-strip top"></div>
+            <img src="https://images.unsplash.com/photo-1596638708316-c1186e88122c?q=80&w=2070" class="era-bg"
+                style="object-position: center bottom;" alt="老火車">
+            <div class="era-content">
+                <span class="era-year">1924</span>
+                <h2 class="era-title">臺鐵宜蘭線</h2>
+                <p class="era-desc">
+                    蒸汽劃破寧靜。鐵路通車，讓宜蘭不再是後山孤島。那一年，火車的鳴笛聲，宣告了工業化交通時代的來臨。
+                </p>
+            </div>
+            <div class="film-strip bottom"></div>
+        </div>
+
+        <!-- 1971: 台9線 (北宜公路) -->
+        <div class="era-slide">
+            <div class="film-strip top"></div>
+            <img src="https://images.unsplash.com/photo-1464219789935-c2d9d9aba644?q=80&w=2070" class="era-bg" alt="山路">
+            <div class="era-content">
+                <span class="era-year">1971</span>
+                <h2 class="era-title">台 9 線 (北宜)</h2>
+                <p class="era-desc">
+                    九彎十八拐的記憶。公路開通，帶來了客運與貨車，也留下了無數暈車與驚險的回憶。這是宜蘭人前往台北打拚的必經之路。
+                </p>
+            </div>
+            <div class="film-strip bottom"></div>
+        </div>
+
+        <!-- 1979: 台2線 (濱海公路) -->
+        <div class="era-slide">
+            <div class="film-strip top"></div>
+            <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=2070" class="era-bg"
+                alt="濱海公路">
+            <div class="era-content">
+                <span class="era-year">1979</span>
+                <h2 class="era-title">台 2 線</h2>
+                <p class="era-desc">
+                    沿著海岸線奔馳。濱海公路的拓寬，分擔了山路的壓力。砂石車與海風並行，是那個經濟起飛年代的獨特風景。
+                </p>
+            </div>
+            <div class="film-strip bottom"></div>
+        </div>
+
+        <!-- 2006: 國道5號 (雪隧) -->
+        <div class="era-slide">
+            <div class="film-strip top"></div>
+            <img src="https://images.unsplash.com/photo-1545620956-f682bb7b7746?q=80&w=2073" class="era-bg"
+                alt="高速公路隧道">
+            <div class="era-content">
+                <span class="era-year">2006</span>
+                <h2 class="era-title">國道 5 號</h2>
+                <p class="era-desc">
+                    天塹變通途。雪山隧道的貫通，將時空距離縮短至 50 分鐘。臺北客湧入，農舍變民宿，宜蘭從此改變了樣貌。
+                </p>
+            </div>
+            <div class="film-strip bottom"></div>
+        </div>
+
+        <!-- 2036: 高鐵 (未來) -->
+        <div class="era-slide">
+            <div class="film-strip top"></div>
+            <img src="https://images.unsplash.com/photo-1517415278153-e91b490dc679?q=80&w=2069" class="era-bg" alt="高鐵">
+            <div class="era-overlay"
+                style="background: linear-gradient(to top, rgba(231, 76, 60, 0.4) 0%, rgba(0,0,0,0.6) 100%);"></div>
+            <div class="era-content">
+                <span class="era-year">2036 <span>目標</span></span>
+                <h2 class="era-title">宜蘭高鐵</h2>
+                <p class="era-desc">
+                    失速的拼圖？12 分鐘到南港的極速夢想。但在這條昂貴的軌道終點，我們迎接的會是繁榮的都會，還是被房價淹沒的故鄉？
+                </p>
+            </div>
+            <div class="film-strip bottom"></div>
+        </div>
+    </div>
+
+    <script>
+        // Optional: Add simple parallax or active state class script
+        const container = document.querySelector('.evolution-container');
+        const slides = document.querySelectorAll('.era-slide');
+
+        // Simple observer to trigger animations freshly when slide comes into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const content = entry.target.querySelector('.era-content');
+                if (entry.isIntersecting) {
+                    content.style.animation = 'none';
+                    content.offsetHeight; /* trigger reflow */
+                    content.style.animation = 'slideUp 1s forwards 0.3s';
+                }
+            });
+        }, { threshold: 0.5 });
+
+        slides.forEach(slide => observer.observe(slide));
+    </script>
+</body>
+
+</html>
