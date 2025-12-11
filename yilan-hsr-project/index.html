@@ -548,35 +548,10 @@
                 text-align: center;
             }
         }
-    </style>
-</head>
 
-<body>
-    <section id="hero" class="scrolly-section hero-section">
-        <div class="sticky-background"><video id="heroVideo" class="bg-video" autoplay muted loop playsinline
-                preload="auto" fetchpriority="high"
-                poster="https://images.unsplash.com/photo-1474487548417-781cb714c22d?q=80&w=2070">
-                <source src="my-train.mp4" type="video/mp4">
-            </video></div>
-        <div class="header-sticky-wrapper">
-            <div class="header-content">
-                <h1 class="main-title">失速的千億拼圖</h1>
-                <div style="background: var(--accent); padding: 5px 20px; font-size: 1.2rem; font-weight: bold;">
-                    宜蘭高鐵這帖藥，治的是交通還是炒房？ </div>
-                <p style="margin-top: 30px; opacity: 0.9; font-size: 1rem;">記者：戴悦鈴、楊佳蓁、張童寧 ｜ 2025 深度報導 </p><button
-                    class="sound-btn" onclick="toggleSound()"><span id="soundIcon">🔇</span><span
-                        id="soundText">開啟現場音效</span></button>
-                <div style="margin-top: 80px; animation: bounce 2s infinite; font-size: 1.5rem; opacity: 0.7;">⬇</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Fullscreen Component: Transport Evolution Timeline -->
-    <!-- Dynamic Transport Evolution Timeline (Vertical Scroll -> Horizontal Slide) -->
-    <style>
+        /* --- Transport Evolution Timeline --- */
         .evo-scroll-section {
             height: 600vh;
-            /* Scrollable height */
             position: relative;
             z-index: 10;
         }
@@ -595,7 +570,6 @@
             display: flex;
             height: 100%;
             width: 600vw;
-            /* 6 slides * 100vw */
             will-change: transform;
         }
 
@@ -699,7 +673,116 @@
             bottom: 0;
             border-top: 2px solid #fff;
         }
+
+        /* --- Cinematic Intro & Part 1 Redesign --- */
+        .zoom-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: slowZoom 30s infinite alternate ease-in-out;
+        }
+
+        @keyframes slowZoom {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.2);
+            }
+        }
+
+        .dark-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
+            z-index: 1;
+        }
+
+        .cinematic-intro {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: #fff;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 1);
+        }
+
+        .cinematic-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #aaa);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 5px;
+        }
+
+        .cinematic-text {
+            font-size: 1.2rem;
+            max-width: 800px;
+            line-height: 1.8;
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 50px;
+            border-radius: 20px;
+            max-width: 700px;
+            margin: 50vh auto 20vh;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transform: translateY(50px);
+            opacity: 0;
+            animation: slideUpFade 1s forwards;
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
+        }
+
+        @keyframes slideUpFade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
+</head>
+
+<body>
+    <section id="hero" class="scrolly-section hero-section">
+        <div class="sticky-background"><video id="heroVideo" class="bg-video" autoplay muted loop playsinline
+                preload="auto" fetchpriority="high"
+                poster="https://images.unsplash.com/photo-1474487548417-781cb714c22d?q=80&w=2070">
+                <source src="my-train.mp4" type="video/mp4">
+            </video></div>
+        <div class="header-sticky-wrapper">
+            <div class="header-content">
+                <h1 class="main-title">失速的千億拼圖</h1>
+                <div style="background: var(--accent); padding: 5px 20px; font-size: 1.2rem; font-weight: bold;">
+                    宜蘭高鐵這帖藥，治的是交通還是炒房？ </div>
+                <p style="margin-top: 30px; opacity: 0.9; font-size: 1rem;">記者：戴悦鈴、楊佳蓁、張童寧 ｜ 2025 深度報導 </p><button
+                    class="sound-btn" onclick="toggleSound()"><span id="soundIcon">🔇</span><span
+                        id="soundText">開啟現場音效</span></button>
+                <div style="margin-top: 80px; animation: bounce 2s infinite; font-size: 1.5rem; opacity: 0.7;">⬇</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fullscreen Component: Transport Evolution Timeline -->
+    <!-- Dynamic Transport Evolution Timeline (Vertical Scroll -> Horizontal Slide) -->
+
 
     <section class="evo-scroll-section">
         <div class="evo-sticky-wrapper">
@@ -786,91 +869,7 @@
     </section>
 
     <!-- Cinematic Intro & Part 1 Redesign -->
-    <style>
-        .zoom-bg {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            animation: slowZoom 30s infinite alternate ease-in-out;
-        }
 
-        @keyframes slowZoom {
-            from {
-                transform: scale(1);
-            }
-
-            to {
-                transform: scale(1.2);
-            }
-        }
-
-        .dark-gradient {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
-            z-index: 1;
-        }
-
-        .cinematic-intro {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            color: #fff;
-            text-shadow: 0 4px 30px rgba(0, 0, 0, 1);
-        }
-
-        .cinematic-title {
-            font-size: 4rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #fff, #aaa);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 5px;
-        }
-
-        .cinematic-text {
-            font-size: 1.2rem;
-            max-width: 800px;
-            line-height: 1.8;
-            font-weight: 300;
-            margin-bottom: 2rem;
-        }
-
-        .glass-panel {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-left: 4px solid var(--accent);
-            padding: 50px;
-            border-radius: 20px;
-            max-width: 700px;
-            margin: 50vh auto 20vh;
-            /* Layout positioning */
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            transform: translateY(50px);
-            opacity: 0;
-            animation: slideUpFade 1s forwards;
-            animation-timeline: view();
-            animation-range: entry 10% cover 30%;
-        }
-
-        @keyframes slideUpFade {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
 
     <section class="scrolly-section">
         <div class="sticky-background">
@@ -903,6 +902,130 @@
                 <p style="font-size: 1.1rem; line-height: 1.8;">
                     採訪台鐵工會理事後發現，高鐵搶走高價值的長途客源後，台鐵勢必減班或轉型。對於付不起高鐵票的在地通勤族，交通權益是否反而受損？
                 </p>
+            </div> <!-- Close Part 1 Glass Panel -->
+        </div> <!-- Close scrolling-content -->
+    </section>
+
+    <!-- Restored Interaction: Comparison Table -->
+    <style>
+        .glass-panel.wide-panel {
+            max-width: 1000px;
+            margin-top: 5vh;
+            padding: 40px;
+        }
+
+        .comparison-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            vertical-align: top;
+        }
+
+        .comparison-table th {
+            color: var(--accent);
+            font-size: 1.1rem;
+            border-bottom: 2px solid var(--accent);
+            white-space: nowrap;
+        }
+
+        .comparison-table td {
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .source-note {
+            display: block;
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+
+    <!-- Wrapped in Glass Panel for consistency -->
+    <div class="glass-panel wide-panel">
+        <h3 style="color: #fff; font-size: 1.8rem; margin-bottom: 20px;">工程效益比較</h3>
+        <div class="comparison-table-wrapper">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th width="15%">項目</th>
+                        <th width="42%">北宜直鐵 (原計畫)</th>
+                        <th width="42%">北宜高鐵 (本計畫)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight:bold; color:#fff;">路線長度</td>
+                        <td>53 公里</td>
+                        <td>60.6 公里</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold; color:#fff;">工程經費</td>
+                        <td>724 億 <br><span class="source-note">(實際恐達 2000 億)</span></td>
+                        <td>3522 億 <br><span class="source-note">(實際恐達 4000 億)</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold; color:#fff;">乘車時間</td>
+                        <td>
+                            台北~南港 10 分鐘<br>
+                            南港~宜蘭火車站 46~54 分鐘<br>
+                            <span class="highlight">總計 56~64 分鐘</span>
+                        </td>
+                        <td>
+                            台北~南港 8 分鐘<br>
+                            南港~宜蘭新站 20 分鐘<br>
+                            <span class="highlight">總計 41 分鐘</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold; color:#fff;">尖峰運能</td>
+                        <td>2,152 座位/小時</td>
+                        <td>4,885 ~ 7,500 座位/小時</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold; color:#fff;">實際影響</td>
+                        <td>衝擊營收，估計虧損 580 億</td>
+                        <td>?</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Fullscreen Component: Interactive Price Table -->
+    <!-- The new interactive price table is below as a fullscreen section -->
+
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper"><iframe src="price-table.html?v=4" class="fullscreen-iframe"></iframe></div>
+    </section>
+
+    <section class="scrolly-section">
+        <div class="sticky-background">
+            <div class="dark-gradient"></div>
+            <img src="https://images.unsplash.com/photo-1474487548417-781cb714c22d?q=80&w=2070" class="zoom-bg"
+                style="object-position: center;">
+        </div>
+        <div class="scrolling-content">
+            <!-- Continues Part 1 Conclusion inside a new glass panel -->
+            <div class="glass-panel" style="margin-top: 20vh; margin-bottom: 20vh;">
                 <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 30px 0;">
                 <h3 style="text-align: center; color: var(--accent);">👇 您的選擇會是什麼？</h3>
             </div>

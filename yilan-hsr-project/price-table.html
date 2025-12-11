@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>方案比較表</title>
+    <style>
+        :root {
+            --bg-dark: #000;
+            --text-light: #f0f0f0;
+            --accent: #e74c3c;
+            /* HSR Red */
+            --accent-blue: #3498db;
+            /* TRA Blue */
+            --card-bg: rgba(20, 20, 20, 0.9);
+            --success: #2ecc71;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Noto Sans TC', sans-serif;
+            background: transparent;
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            /* Changed from center to allow scrolling from top */
+            min-height: 100vh;
+            overflow-y: auto;
+            /* Allow vertical scrolling */
+        }
+
+        .table-container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h2 {
+            font-size: 2rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(45deg, var(--accent-blue), #fff, var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Grid Layout */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .row-card {
+            display: grid;
+            grid-template-columns: 1.2fr 2fr 2fr 2fr;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .row-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .row-card.highlight-tra {
+            border-left-color: var(--accent-blue);
+        }
+
+        .row-card.highlight-hsr {
+            border-left-color: var(--accent);
+        }
+
+        .cell-dest {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .cell-plan {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .plan-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .plan-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .plan-value .time {
+            color: #fff;
+        }
+
+        .plan-value .price {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+
+        .cell-diff {
+            font-weight: bold;
+            font-size: 0.95rem;
+            text-align: right;
+            line-height: 1.4;
+        }
+
+        .highlight-green {
+            color: var(--success);
+        }
+
+        .highlight-red {
+            color: var(--accent);
+        }
+
+        /* Interactive Bars inside */
+        .bar-container {
+            height: 4px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+            display: none;
+            /* Show on hover */
+        }
+
+        .row-card:hover .bar-container {
+            display: block;
+            animation: growBar 0.5s ease-out;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 2px;
+        }
+
+        @keyframes growBar {
+            from {
+                width: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .row-card {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .cell-dest {
+                width: 100%;
+                grid-column: span 2;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                padding-bottom: 10px;
+                margin-bottom: 5px;
+            }
+
+            .cell-diff {
+                grid-column: span 2;
+                text-align: left;
+                background: rgba(0, 0, 0, 0.3);
+                padding: 10px;
+                border-radius: 8px;
+                margin-top: 5px;
+            }
+
+            .header h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="table-container">
+        <div class="header">
+            <h2>時間 vs. 金錢：誰是贏家？</h2>
+            <p>滑動卡片查看細節</p>
+        </div>
+
+        <div class="comparison-grid">
+            <!-- Labels Row (Secretly hidden on mobile, visible on desktop) -->
+            <div class="row-card"
+                style="background: transparent; pointer-events: none; padding: 10px 20px; font-weight: bold; color: #888;">
+                <div>目的地</div>
+                <div>高鐵方案 (南港出發)</div>
+                <div>直鐵方案 (南港出發)</div>
+                <div style="text-align: right;">差異分析</div>
+            </div>
+
+            <!-- Toucheng -->
+            <div class="row-card highlight-tra">
+                <div class="cell-dest">頭城</div>
+                <div class="cell-plan">
+                    <span class="plan-label">HSR 高鐵</span>
+                    <div class="plan-value"><span class="time">59分</span> <span class="price">$321</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 100%; background: var(--accent);"></div>
+                    </div>
+                </div>
+                <div class="cell-plan">
+                    <span class="plan-label">TRA 直鐵</span>
+                    <div class="plan-value"><span class="time">37分</span> <span class="price">$120</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 62%; background: var(--accent-blue);"></div>
+                    </div>
+                </div>
+                <div class="cell-diff">
+                    <div class="highlight-green">直鐵快 22 分鐘</div>
+                    <div class="highlight-green">票價省 201 元</div>
+                </div>
+            </div>
+
+            <!-- Jiaoxi -->
+            <div class="row-card highlight-tra">
+                <div class="cell-dest">礁溪</div>
+                <div class="cell-plan">
+                    <span class="plan-label">HSR 高鐵</span>
+                    <div class="plan-value"><span class="time">51分</span> <span class="price">$315</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 100%; background: var(--accent);"></div>
+                    </div>
+                </div>
+                <div class="cell-plan">
+                    <span class="plan-label">TRA 直鐵</span>
+                    <div class="plan-value"><span class="time">43分</span> <span class="price">$134</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 84%; background: var(--accent-blue);"></div>
+                    </div>
+                </div>
+                <div class="cell-diff">
+                    <div class="highlight-green">直鐵快 8 分鐘</div>
+                    <div class="highlight-green">票價省 181 元</div>
+                </div>
+            </div>
+
+            <!-- Yilan -->
+            <div class="row-card highlight-tra">
+                <div class="cell-dest">宜蘭</div>
+                <div class="cell-plan">
+                    <span class="plan-label">HSR 高鐵</span>
+                    <div class="plan-value"><span class="time">41分</span> <span class="price">$315</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 89%; background: var(--accent);"></div>
+                    </div>
+                </div>
+                <div class="cell-plan">
+                    <span class="plan-label">TRA 直鐵</span>
+                    <div class="plan-value"><span class="time">46分</span> <span class="price">$153</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 100%; background: var(--accent-blue);"></div>
+                    </div>
+                </div>
+                <div class="cell-diff">
+                    <div style="color: #bbb;">直鐵慢 5 分鐘</div>
+                    <div class="highlight-green">票價省 162 元</div>
+                </div>
+            </div>
+
+            <!-- HSR Yilan Station (New) -->
+            <div class="row-card highlight-hsr">
+                <div class="cell-dest">高鐵宜蘭站<br><span style="font-size:0.6em;opacity:0.6;">(縣政中心以南)</span></div>
+                <div class="cell-plan">
+                    <span class="plan-label">HSR 高鐵</span>
+                    <div class="plan-value"><span class="time">28分</span> <span class="price">$300</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 57%; background: var(--accent);"></div>
+                    </div>
+                </div>
+                <div class="cell-plan">
+                    <span class="plan-label">TRA 直鐵</span>
+                    <div class="plan-value"><span class="time">49分</span> <span class="price">$160</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 100%; background: var(--accent-blue);"></div>
+                    </div>
+                </div>
+                <div class="cell-diff">
+                    <div style="color: #bbb;">直鐵慢 21 分鐘</div>
+                    <div class="highlight-green">票價省 140 元</div>
+                </div>
+            </div>
+
+            <!-- Luodong -->
+            <div class="row-card highlight-tra">
+                <div class="cell-dest">羅東</div>
+                <div class="cell-plan">
+                    <span class="plan-label">HSR 高鐵</span>
+                    <div class="plan-value"><span class="time">46分</span> <span class="price">$315</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 85%; background: var(--accent);"></div>
+                    </div>
+                </div>
+                <div class="cell-plan">
+                    <span class="plan-label">TRA 直鐵</span>
+                    <div class="plan-value"><span class="time">54分</span> <span class="price">$173</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 100%; background: var(--accent-blue);"></div>
+                    </div>
+                </div>
+                <div class="cell-diff">
+                    <div style="color: #bbb;">直鐵慢 8 分鐘</div>
+                    <div class="highlight-green">票價省 142 元</div>
+                </div>
+            </div>
+
+            <!-- Suaoxin -->
+            <div class="row-card highlight-tra">
+                <div class="cell-dest">蘇澳新</div>
+                <div class="cell-plan">
+                    <span class="plan-label">HSR 高鐵</span>
+                    <div class="plan-value"><span class="time">56分</span> <span class="price">$319</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 87%; background: var(--accent);"></div>
+                    </div>
+                </div>
+                <div class="cell-plan">
+                    <span class="plan-label">TRA 直鐵</span>
+                    <div class="plan-value"><span class="time">64分</span> <span class="price">$196</span></div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 100%; background: var(--accent-blue);"></div>
+                    </div>
+                </div>
+                <div class="cell-diff">
+                    <div style="color: #bbb;">直鐵慢 8 分鐘</div>
+                    <div class="highlight-green">票價省 123 元</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Simple hover interaction logging or analytics could go here
+        document.querySelectorAll('.row-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Can trigger enhanced animations if needed
+            });
+        });
+    </script>
+
+</body>
+
+</html>
