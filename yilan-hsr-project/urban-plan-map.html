@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宜蘭高鐵特定區都市計畫配置圖</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;500;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #1e1e1e;
+            --text-light: #f0f0f0;
+            --tooltip-bg: rgba(0, 0, 0, 0.9);
+            --border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .map-container {
+            position: relative;
+            width: 95%;
+            height: 90%;
+            max-width: 1200px;
+            /* background: #2a2a2a; */
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .map-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 15px 25px;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+            pointer-events: none; /* Let clicks pass through */
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        p.subtitle {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: #ddd;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* Image Layer */
+        .map-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Fill the container */
+            object-position: center;
+            background-color: #000;
+            display: block;
+        }
+
+        /* SVG Overlay Layer */
+        .svg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
+
+        /* Hotspot Styles */
+        .hotspot {
+            fill: transparent; /* Invisible by default */
+            stroke: transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .hotspot:hover {
+            fill: rgba(255, 255, 255, 0.1); /* Subtle highlight on hover */
+            stroke: rgba(255, 255, 255, 0.8);
+            stroke-width: 2px;
+            stroke-dasharray: 5,5;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: var(--tooltip-bg);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 100;
+            transform: translate(-50%, -120%); /* Move up */
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+         /* Legend (Simplified for photo mode) */
+         .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="map-container">
+        <div class="map-header">
+            <h1>宜蘭高鐵特定區都市計畫</h1>
+            <p class="subtitle">原圖互動版 (請滑動游標查看各分區)</p>
+        </div>
+
+        <!-- Base Image -->
+        <img src="urban-plan-base.jpg" class="map-image" alt="都市計畫原圖">
+
+        <!-- SVG Overlay for Clickable Zones -->
+        <!-- ViewBox ensures coordinates scale with the image -->
+        <!-- Based on 16:9 approx aspect of the photo -->
+        <svg class="svg-overlay" viewBox="0 0 1600 900" preserveAspectRatio="none">
+            
+            <!-- Rough Mapping based on the visual layout: -->
+            <!-- Station is center -->
+            <circle cx="650" cy="500" r="80" class="hotspot" data-info="高鐵車站：計畫核心，全區樞紐" />
+            
+            <!-- Commercial (Right of Station) -->
+            <rect x="750" y="450" width="150" height="200" class="hotspot" data-info="商業機能：站前購物與商業中心" />
+            
+            <!-- Residential (Upper Right) -->
+            <path d="M 800 150 L 1100 170 L 1050 400 L 780 380 Z" class="hotspot" data-info="住宅機能：高品質生活圈" />
+            
+            <!-- Residential (Lower Left) -->
+            <path d="M 350 600 L 550 620 L 530 800 L 330 780 Z" class="hotspot" data-info="住宅機能：新興住宅區" />
+
+            <!-- Industrial (Top Center/Right - Actually "Industry" is usually darker brown in Yilan plans) -->
+            <path d="M 800 100 L 1200 120 L 1150 250 L 780 230 Z" class="hotspot" data-info="產業機能：科技園區預定地" />
+
+            <!-- Social Welfare (Left of Station) -->
+            <path d="M 400 450 L 550 460 L 540 580 L 390 560 Z" class="hotspot" data-info="社福機關：行政與醫療中心" />
+
+            <!-- Park/Green (Curving through) -->
+            <path d="M 500 400 Q 800 450 1100 350 T 1400 450" stroke="transparent" stroke-width="50" fill="none" class="hotspot" data-info="開放空間：水岸綠廊" />
+            
+        </svg>
+
+        <div class="legend">
+            💡 提示：將滑鼠游標移至地圖圖像上方即可查看詳情
+        </div>
+
+        <div id="tooltip" class="tooltip"></div>
+    </div>
+
+    <script>
+        const tooltip = document.getElementById('tooltip');
+        const hotspots = document.querySelectorAll('.hotspot');
+        const mapContainer = document.querySelector('.map-container');
+
+        hotspots.forEach(spot => {
+            spot.addEventListener('mousemove', (e) => {
+                const info = spot.getAttribute('data-info');
+                if (info) {
+                    tooltip.innerHTML = info;
+                    tooltip.style.opacity = 1;
+
+                    // Calculate relative position within the map container
+                    const rect = mapContainer.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    tooltip.style.left = x + 'px';
+                    tooltip.style.top = y + 'px';
+                }
+            });
+
+            spot.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = 0;
+            });
+        });
+    </script>
+</body>
+</html>

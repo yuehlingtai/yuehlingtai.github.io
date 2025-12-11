@@ -790,8 +790,7 @@
                 <!-- 1895 -->
                 <div class="evo-slide">
                     <div class="film-strip top"></div>
-                    <img src="https://images.unsplash.com/photo-1440557653067-160b72c93847?q=80&w=2600" class="evo-bg"
-                        style="filter: grayscale(100%) contrast(1.2);">
+                    <img src="淡蘭古道.png" class="evo-bg" style="filter: grayscale(100%) contrast(1.2);">
                     <div class="evo-content">
                         <span class="evo-year">1895</span>
                         <h2 class="evo-title">淡蘭古道</h2>
@@ -802,7 +801,7 @@
                 <!-- 1924 -->
                 <div class="evo-slide">
                     <div class="film-strip top"></div>
-                    <img src="https://images.unsplash.com/photo-1596638708316-c1186e88122c?q=80&w=2070" class="evo-bg"
+                    <img src="台鐵宜蘭線.jpg" class="evo-bg"
                         style="object-position: center bottom; filter: sepia(0.6) contrast(1.1);">
                     <div class="evo-content">
                         <span class="evo-year">1924</span>
@@ -814,10 +813,10 @@
                 <!-- 1971 -->
                 <div class="evo-slide">
                     <div class="film-strip top"></div>
-                    <img src="https://images.unsplash.com/photo-1464219789935-c2d9d9aba644?q=80&w=2070" class="evo-bg">
+                    <img src="台9線.jpg" class="evo-bg">
                     <div class="evo-content">
                         <span class="evo-year">1971</span>
-                        <h2 class="evo-title">台 9 線 (北宜)</h2>
+                        <h2 class="evo-title">台 9 線 (北宜公路)</h2>
                         <p class="evo-desc">九彎十八拐的記憶。公路開通，帶來了客運與貨車，也留下了無數暈車與驚險的回憶。這是宜蘭人前往台北打拚的必經之路。</p>
                     </div>
                     <div class="film-strip bottom"></div>
@@ -825,7 +824,7 @@
                 <!-- 1979 -->
                 <div class="evo-slide">
                     <div class="film-strip top"></div>
-                    <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=2070" class="evo-bg">
+                    <img src="台2線.jpg" class="evo-bg">
                     <div class="evo-content">
                         <span class="evo-year">1979</span>
                         <h2 class="evo-title">台 2 線</h2>
@@ -836,7 +835,7 @@
                 <!-- 2006 -->
                 <div class="evo-slide">
                     <div class="film-strip top"></div>
-                    <img src="https://images.unsplash.com/photo-1545620956-f682bb7b7746?q=80&w=2073" class="evo-bg">
+                    <img src="國道5號.jpg" class="evo-bg">
                     <div class="evo-content">
                         <span class="evo-year">2006</span>
                         <h2 class="evo-title">國道 5 號</h2>
@@ -847,7 +846,7 @@
                 <!-- 2036 -->
                 <div class="evo-slide">
                     <div class="film-strip top"></div>
-                    <img src="https://images.unsplash.com/photo-1517415278153-e91b490dc679?q=80&w=2069" class="evo-bg">
+                    <img src="高鐵.jpg" class="evo-bg">
                     <div class="evo-overlay"
                         style="background: linear-gradient(to top, rgba(231, 76, 60, 0.4) 0%, rgba(0,0,0,0.6) 100%);">
                     </div>
@@ -1103,6 +1102,13 @@
             <div style="height: 10vh;"></div>
         </div>
     </section>
+
+    <!-- Fullscreen Component: Urban Plan Map -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper"><iframe src="urban-plan-map.html" class="fullscreen-iframe"></iframe></div>
+    </section>
+
+
     <!-- Fullscreen Component: Image Slider -->
     <section class="fullscreen-comp-section">
         <div class="comp-sticky-wrapper">
@@ -1226,9 +1232,32 @@
             if (percentage < 0) percentage = 0;
             if (percentage > 1) percentage = 1;
 
-            // Move the track: Total width to move = (track width - viewport width)
-            // Track width is 600vw, so we move 500vw max
-            const moveX = -(percentage * 500); // 5 slides worth of movement
+            // --- Sticky Stepping Logic ---
+            // Create a "Stick and Move" effect
+            // We have 5 intervals (0->1, 1->2 ... 4->5) for 6 slides
+            let rawPos = percentage * 5;
+            let index = Math.floor(rawPos);
+            let fract = rawPos - index;
+
+            // Stick config: Hold position for the majority of the section (70%)
+            // This ensures the image stays "frozen" for reading before transitioning
+            const stickThreshold = 0.7;
+            let finalPos = rawPos;
+
+            if (fract < stickThreshold) {
+                // Sticky phase: Hold at the current index
+                finalPos = index;
+            } else {
+                // Moving phase: Interpolate the remaining 30% to the next index
+                // (fract - 0.7) / 0.3 maps 0.7..1.0 to 0..1
+                finalPos = index + (fract - stickThreshold) / (1 - stickThreshold);
+            }
+
+            // Ensure we hit the end exactly
+            if (percentage === 1) finalPos = 5;
+
+            // Move the track
+            const moveX = -(finalPos * 100); // 100vw per slide unit
             track.style.transform = `translateX(${moveX}vw)`;
 
             if (progress) progress.style.width = `${percentage * 100}%`;
