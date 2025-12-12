@@ -373,4 +373,115 @@
                         return;
                     }
 
-                    // 更新數據與狀
+                    // 更新數據與狀態
+                    currentData = formatData(data);
+                    userVoted[type] = true;
+                    localStorage.setItem('yilan_user_voted', JSON.stringify(userVoted));
+
+                    // 顯示結果
+                    showResultsUI(type);
+                    updateCharts(type);
+                })
+                .catch(error => {
+                    alert("投票連線失敗，請檢查網路或稍後再試！");
+                    console.error(error);
+                    btnArea.style.opacity = '1';
+                    btnArea.style.pointerEvents = 'auto';
+                });
+        }
+
+        // 3. 資料格式轉換函式 (重要！)
+        function formatData(flatData) {
+            return {
+                now: {
+                    car: flatData['now_car'] || 0,
+                    bus: flatData['now_bus'] || 0,
+                    train: flatData['now_train'] || 0,
+                    other: flatData['now_other'] || 0
+                },
+                future: {
+                    hsr: flatData['future_hsr'] || 0,
+                    car: flatData['future_car'] || 0,
+                    train: flatData['future_train'] || 0,
+                    bus: flatData['future_bus'] || 0
+                }
+            };
+        }
+
+        // 4. 介面切換
+        function showResultsUI(type) {
+            document.getElementById(`options-${type}`).style.display = 'none';
+            document.getElementById(`results-${type}`).style.display = 'block';
+        }
+
+        // 5. 繪製圖表
+        function updateCharts(type) {
+            if (!currentData[type]) return;
+
+            const resultDiv = document.getElementById(`results-${type}`);
+            const total = Object.values(currentData[type]).reduce((a, b) => a + b, 0);
+
+            const labels = {
+                now: { car: "開車", bus: "客運", train: "台鐵", other: "其他" },
+                future: { hsr: "改搭高鐵", car: "繼續開車", train: "繼續台鐵", bus: "繼續客運" }
+            };
+
+            const sortedKeys = Object.keys(currentData[type]).sort((a, b) => currentData[type][b] - currentData[type][a]);
+
+            let html = '';
+            sortedKeys.forEach(key => {
+                const count = currentData[type][key];
+                const percent = total === 0 ? 0 : Math.round((count / total) * 100);
+                const specialClass = (key === 'hsr') ? 'hsr-fill' : '';
+                const icon = getIcon(key);
+
+                html += `
+                <div class="result-item">
+                    <div class="result-label">
+                        <span>${icon} ${labels[type][key]}</span>
+                        <span>${percent}% (${count}票)</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill ${specialClass}" style="width: ${percent}%"></div>
+                    </div>
+                </div>
+            `;
+            });
+
+            html += `<div class="total-votes">累積參與人數：${total} 人</div>`;
+
+            if (type === 'future' && total > 0) {
+                html += `<p style="text-align:center; font-size:0.9em; color:#e63946; margin-top:15px; font-weight:bold;">
+                發現了嗎？即使高鐵蓋好，選擇「繼續開車」的人依然佔多數。<br>國五塞車問題，真的能解決嗎？
+             </p>`;
+            }
+
+            resultDiv.innerHTML = html;
+
+            // 如果是 Step 1 (Now)，加一個「下一題」按鈕
+            if (type === 'now' && !document.getElementById('btn-next-q')) {
+                const nextBtn = document.createElement('button');
+                nextBtn.id = 'btn-next-q';
+                nextBtn.className = 'next-btn';
+                nextBtn.innerHTML = '下一題 ➔';
+                nextBtn.onclick = () => goToStep(2);
+                resultDiv.appendChild(nextBtn);
+            }
+        }
+
+        function getIcon(key) {
+            if (key === 'car') return '🚗';
+            if (key === 'bus') return '🚌';
+            if (key === 'train') return '🚆';
+            if (key === 'hsr') return '🚄';
+            return '🛵';
+        }
+        function resetPoll() {
+            localStorage.removeItem('yilan_user_voted');
+            location.reload();
+        }
+    </script>
+
+</body>
+
+</html>

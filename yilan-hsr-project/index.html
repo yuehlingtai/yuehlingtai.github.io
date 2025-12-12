@@ -808,4 +808,589 @@
                 <div class="evo-slide">
                     <div class="film-strip top"></div>
                     <img src="台2線.jpg" class="evo-bg">
-                    <div class="evo-c
+                    <div class="evo-content">
+                        <span class="evo-year">1979</span>
+                        <h2 class="evo-title">台 2 線</h2>
+                        <p class="evo-desc">沿著海岸線奔馳。濱海公路的拓寬，分擔了山路的壓力。砂石車與海風並行，是那個經濟起飛年代的獨特風景。</p>
+                    </div>
+                    <div class="film-strip bottom"></div>
+                </div>
+                <!-- 2006 -->
+                <div class="evo-slide">
+                    <div class="film-strip top"></div>
+                    <img src="國道5號.jpg" class="evo-bg">
+                    <div class="evo-content">
+                        <span class="evo-year">2006</span>
+                        <h2 class="evo-title">國道 5 號</h2>
+                        <p class="evo-desc">天塹變通途。雪山隧道的貫通，將時空距離縮短至 50 分鐘。臺北客湧入，農舍變民宿，宜蘭從此改變了樣貌。</p>
+                    </div>
+                    <div class="film-strip bottom"></div>
+                </div>
+                <!-- 2036 -->
+                <div class="evo-slide">
+                    <div class="film-strip top"></div>
+                    <img src="高鐵.jpg" class="evo-bg">
+                    <div class="evo-overlay"
+                        style="background: linear-gradient(to top, rgba(231, 76, 60, 0.4) 0%, rgba(0,0,0,0.6) 100%);">
+                    </div>
+                    <div class="evo-content">
+                        <span class="evo-year">2036 <span>目標</span></span>
+                        <h2 class="evo-title">宜蘭高鐵</h2>
+                        <p class="evo-desc">失速的拼圖？12 分鐘到南港的極速夢想。但在這條昂貴的軌道終點，我們迎接的會是繁榮的都會，還是被房價淹沒的故鄉？</p>
+                    </div>
+                    <div class="film-strip bottom"></div>
+                </div>
+            </div>
+            <!-- Progress Bar -->
+            <div
+                style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 200px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px;">
+                <div id="evoProgress" style="width: 0%; height: 100%; background: var(--accent); border-radius: 2px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cinematic Intro & Part 1 Redesign -->
+
+
+    <section class="scrolly-section">
+        <div class="sticky-background">
+            <div class="dark-gradient"></div>
+            <video class="bg-video" autoplay muted loop playsinline preload="auto"
+                style="object-position: center; filter: brightness(0.9) opacity(0.9);">
+                <source src="搭葛瑪蘭經過隧道影片.MP4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="scrolling-content">
+            <!-- Cinematic Introduction -->
+            <div class="cinematic-intro">
+                <div
+                    style="font-size: 1.2rem; color: var(--accent); letter-spacing: 3px; margin-bottom: 10px; font-weight: bold;">
+                    引言</div>
+                <h2 class="cinematic-title">1800 億的豪賭</h2>
+                <div class="cinematic-text">
+                    <p style="margin-bottom: 20px;">2025年8月，「高鐵延伸宜蘭計畫」環評通過，<br>規劃了近20年的北宜直鐵確定不會實現。</p>
+                    <p style="font-size: 1rem; opacity: 0.8;">從北宜直鐵到高鐵延伸，這是一場關於速度、效率與土地正義的角力。</p>
+                </div>
+                <div style="font-size: 2rem; opacity: 0.5; animation: bounce 2s infinite;">↓</div>
+            </div>
+
+            <!-- Part 1 Glass Panel -->
+            <div class="glass-panel">
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Part 1. 系統的代價</h2>
+                <h3 style="color: var(--accent); margin-bottom: 20px;">Q1：高鐵進場，台鐵退場？</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px;">
+                    早在2006年，政府即為了提升東部的交通效率，推動使用臺鐵系統的北宜直鐵方案。期間面臨路線規劃穿越翡翠水庫集水區，導致環評程序受阻...
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    採訪台鐵工會理事後發現，高鐵搶走高價值的長途客源後，台鐵勢必減班或轉型。對於付不起高鐵票的在地通勤族，交通權益是否反而受損？
+                </p>
+            </div> <!-- Close Part 1 Glass Panel -->
+
+
+            <!-- Restored Interaction: Comparison Table -->
+            <style>
+                .glass-panel.wide-panel {
+                    max-width: 1000px;
+                    margin-top: 5vh;
+                    padding: 40px;
+                }
+
+                .comparison-table-wrapper {
+                    overflow-x: auto;
+                }
+
+                .comparison-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    min-width: 600px;
+                    font-size: 0.95rem;
+                    margin-top: 10px;
+                }
+
+                .comparison-table th,
+                .comparison-table td {
+                    padding: 15px 20px;
+                    text-align: left;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                    vertical-align: top;
+                }
+
+                .comparison-table th {
+                    color: var(--accent);
+                    font-size: 1.1rem;
+                    border-bottom: 2px solid var(--accent);
+                    white-space: nowrap;
+                }
+
+                .comparison-table td {
+                    color: #ddd;
+                    line-height: 1.6;
+                }
+
+                .comparison-table tr:last-child td {
+                    border-bottom: none;
+                }
+
+                .source-note {
+                    display: block;
+                    font-size: 0.8rem;
+                    color: #aaa;
+                    margin-top: 5px;
+                    font-style: italic;
+                }
+            </style>
+
+            <!-- Wrapped in Glass Panel for consistency -->
+            <section class="fullscreen-comp-section"
+                style="height: 300vh; background: transparent; pointer-events: none;">
+                <div class="comp-sticky-wrapper" style="pointer-events: auto;">
+                    <div class="glass-panel wide-panel"
+                        style="width: 95%; max-width: 1000px; max-height: 80vh; overflow-y: auto; margin: 0;">
+                        <h3 style="color: #fff; font-size: 1.8rem; margin-bottom: 20px;">北宜直鐵 vs 北宜高鐵</h3>
+                        <div class="comparison-table-wrapper">
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th width="25%">項目</th>
+                                        <th width="37.5%">北宜直鐵 (原計畫)</th>
+                                        <th width="37.5%">北宜高鐵 (本計畫)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="font-weight:bold; color:#fff;">路線長度</td>
+                                        <td>53 公里</td>
+                                        <td>60.6 公里</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold; color:#fff;">工程經費</td>
+                                        <td>724 億 <br><span class="source-note">(實際恐達 2000 億)</span></td>
+                                        <td>3522 億 <br><span class="source-note">(實際恐達 4000 億)</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold; color:#fff;">乘車時間</td>
+                                        <td>
+                                            台北~南港 10 分鐘<br>
+                                            南港~宜蘭火車站 46~54 分鐘<br>
+                                            <span class="highlight">總計 56~64 分鐘</span>
+                                        </td>
+                                        <td>
+                                            台北~南港 8 分鐘<br>
+                                            南港~宜蘭新站 20 分鐘<br>
+                                            <span class="highlight">總計 41 分鐘</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold; color:#fff;">尖峰運能</td>
+                                        <td>2,152 座位/小時</td>
+                                        <td>4,885 ~ 7,500 座位/小時</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold; color:#fff;">實際影響</td>
+                                        <td>衝擊營收，估計虧損 580 億</td>
+                                        <td>?</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fullscreen Component: Interactive Price Table (Integrated) -->
+            <section class="fullscreen-comp-section"
+                style="height: 200vh; background: transparent; pointer-events: none;">
+                <div class="comp-sticky-wrapper" style="pointer-events: auto;">
+                    <iframe src="price-table.html?v=5" style="width: 100%; height: 100vh; border: none;"></iframe>
+                </div>
+            </section>
+        </div> <!-- Close scrolling-content -->
+    </section>
+
+    <section class="scrolly-section">
+        <div class="sticky-background">
+            <div class="dark-gradient"></div>
+            <img src="https://images.unsplash.com/photo-1474487548417-781cb714c22d?q=80&w=2070" class="zoom-bg"
+                style="object-position: center; filter: brightness(0.9) opacity(0.9);">
+        </div>
+        <div class="scrolling-content">
+            <!-- Continues Part 1 Conclusion inside a new glass panel -->
+            <div class="glass-panel" style="margin-top: 20vh; margin-bottom: 20vh;">
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 30px 0;">
+                <h3 style="text-align: center; color: var(--accent);">👇 您的選擇會是什麼？</h3>
+            </div>
+
+            <div style="height: 20vh;"></div> <!-- Spacer -->
+        </div>
+    </section>
+    <!-- Fullscreen Component: Transport Poll -->
+    <!-- Fullscreen Component: Transport Poll -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper"><iframe src="transport-poll.html?v=4" class="fullscreen-iframe"></iframe></div>
+    </section>
+    <section class="scrolly-section">
+        <div class="sticky-background"><img
+                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop"
+                class="bg-video" style="object-position: center bottom;"></div>
+        <div class="scrolling-content">
+            <div class="text-card">
+                <h2>Part 2. 土地的算盤</h2>
+                <p>建設是為了交通還是房地產？選址在縣政中心，是為了交通轉乘便利，還是為了炒熱周邊荒涼的重劃區？</p>
+            </div>
+        </div>
+    </section>
+    <!-- Fullscreen Component: Yilan Value Survey -->
+    <!-- Fullscreen Component: Yilan Value Survey -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper"><iframe src="yilan-value-survey.html?v=4" class="fullscreen-iframe"></iframe>
+        </div>
+    </section>
+    <section class="scrolly-section">
+        <div class="sticky-background">
+            <!-- Repeat the background image for continuity if needed, or leave transparent to show
+                                previous sticky? Scrollytelling usually needs a background for each section if they are
+                                distinct. Let's reuse the image from Part 2 start -->
+            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop"
+                class="bg-video" style="object-position: center bottom;">
+        </div>
+        <div class="scrolling-content">
+            <div class="text-card">
+                <h3>關鍵證據：瘋狂的農地</h3>
+                <p>我們調閱了實價登錄資料，發現就在高鐵站址定案的前後（110年底至111年初），農地價格發生了劇烈的變化。</p>
+                <p>地板價消失了。高鐵還沒蓋，地價已經先搭上高鐵。</p>
+            </div>
+        </div>
+    </section>
+    <!-- Fullscreen Component: Land Price Chart -->
+    <!-- Fullscreen Component: Land Price Chart -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper"><iframe src="land-price-chart.html?v=4" class="fullscreen-iframe"></iframe>
+        </div>
+    </section>
+    <section class="scrolly-section" style="z-index: 10;">
+        <div class="sticky-background"><iframe src="land-price-map.html" class="sticky-map-iframe"></iframe></div>
+        <div class="scrolling-content">
+            <div class="map-hint-card">
+                <h3>☝️ 地價風暴地圖</h3>
+                <p style="margin: 0; font-size: 0.95rem;">請點擊地圖上的紅點，查看 110年與
+                    111年的漲幅。<br>(繼續往下滑動以閱讀下一章) </p>
+            </div>
+        </div>
+    </section>
+    <section class="scrolly-section">
+        <div class="sticky-background"><img
+                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832" class="bg-video"
+                style="object-position: center bottom;"></div>
+        <div class="scrolling-content">
+            <div class="text-card" style="position: relative; top: auto;">
+                <h2>Part 3. 土地的迷思</h2><br>
+                <h3>Q2：從「百萬人流」到「八卦陣空城」</h3>
+                <p>以「支援科學園區」為名，行「擴大都市計畫」之實。顯示當年規劃的宏大願景，對比今日大片閒置的草地與零星的別墅。</p>
+                <p>如果連舊的園區都填不滿，高鐵帶來的這個「新特區」，會不會只是把泡沫吹得更大？</p>
+            </div>
+
+            <!-- Fullscreen Component: Local Opinions -->
+            <!-- Expert Quotes Restored -->
+            <div class="expert-quote-container" style="margin-top: 40px; margin-bottom: 40px;">
+                <!-- Quote 1: Zhang -->
+                <div class="expert-card">
+                    <div class="expert-avatar"><img
+                            src="https://images.unsplash.com/photo-1542178243-bc20204b769f?q=80&w=2600&auto=format&fit=crop"
+                            alt="張先生"></div>
+                    <div class="expert-content">
+                        <div class="expert-text">
+                            土地徵收從來沒有問過我們的意見。我們家三代都在這裡種田，高鐵一來，說徵收就徵收，補償金連去市區買間廁所都不夠。這不是建設，這是掠奪。 </div>
+                        <div class="expert-author">張先生 <span class="expert-role">宜蘭在地農民 (72歲)</span></div>
+                    </div>
+                </div>
+                <!-- Quote 2: Official -->
+                <div class="expert-card">
+                    <div class="expert-avatar"><img
+                            src="https://images.unsplash.com/photo-1556484687-3063616e637e?q=80&w=2600&auto=format&fit=crop"
+                            alt="前縣府專員"></div>
+                    <div class="expert-content">
+                        <div class="expert-text">
+                            縣政中心使用項目限制太多了，它只能純住宅，純住宅裡面生活機能、其他吃喝玩樂都沒有。管制嚴很嚴生活機能又不如市區，人就不會來所以現在變蚊子館。 </div>
+                        <div class="expert-author">匿名受訪者 <span class="expert-role">前宜蘭縣府重劃科專員</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height: 10vh;"></div>
+        </div>
+    </section>
+
+    <!-- Fullscreen Component: Urban Plan Map -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper"><iframe src="urban-plan-map.html" class="fullscreen-iframe"></iframe></div>
+    </section>
+
+
+    <!-- Fullscreen Component: Local Opinions -->
+    <section class="fullscreen-comp-section">
+        <div class="comp-sticky-wrapper"><iframe src="local-opinions.html?v=5" class="fullscreen-iframe"></iframe></div>
+    </section>
+
+    <!-- Fullscreen Component: Image Slider -->
+    <section class="fullscreen-comp-section" id="sliderSection" style="height: 300vh;">
+        <div class="comp-sticky-wrapper">
+            <div class="full-width-slider-wrapper">
+                <div class="comp-container" id="compSlider"><img src="bagua-2025.jpg" class="comp-img comp-img-after"
+                        alt="2025"><span class="comp-label comp-label-after">2025 現況</span>
+                    <div class="comp-overlay"><img src="bagua-2005.jpg" class="comp-img comp-img-before"
+                            alt="2005"><span class="comp-label comp-label-before">2005 規劃初期</span></div>
+                    <div class="comp-handle"><svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
+                            stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                            style="color: white;">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg></div>
+                    <div class="mosquito-swarm">
+                        <div class="mosquito" style="top:30%; left:20%;">🦟</div>
+                        <div class="mosquito" style="top:50%; left:60%;">🦟</div>
+                        <div class="mosquito" style="top:70%; left:40%;">🦟</div>
+                    </div>
+                </div>
+                <div style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); 
+ background: rgba(0, 0, 0, 0.7);
+        padding: 5px 15px;
+        border-radius: 20px;
+        color: #ddd;
+        font-size: 0.9rem;
+        pointer-events: none;
+        z-index: 10;
+        ">
+                    ▲ 左右拖動拉桿，看看 20 年來這裡長出了什麼？ </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scrolly-section">
+        <div class="sticky-background"><img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?q=80&w=2874"
+                class="bg-video" style="object-position: center;"></div>
+        <div class="scrolling-content">
+            <!-- Legacy static avatars section removed as requested (replaced by interactive component) -->
+            <div style="height: 30vh;"></div>
+        </div>
+    </section>
+    <section class="scrolly-section">
+        <div class="sticky-background"><img
+                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832" class="bg-video"
+                style="object-position: center bottom;"></div>
+        <div class="scrolling-content">
+            <div class="text-card"
+                style="text-align: center; border-left: none; border-top: 5px solid var(--accent); margin-bottom: 20vh;">
+                <h2>我們要的是發展，還是幻覺？</h2><br>
+                <p><b>宜蘭需要交通改善，也需要產業升級。但把所有資源都押注在一條「載人高鐵」上，而忽視貨運物流與在地轉乘，可能最後只換來炒高的地皮，與依舊塞車的國道五號。</b></p>
+                <p style="text-align: left;">
+                    高鐵延伸宜蘭案旨在改善東部交通，緩解國五嚴重塞車問題，並紓緩台鐵東部段經常「一票難求」現象。預計2036年竣工、造價3522億的高鐵宜蘭新站，縮短了北宜之間的交通時間。然而，宜蘭新站設於縣政中心東側，未來旅客到站後接駁轉乘至宜蘭市區、各觀光景點是一大挑戰。
+                </p>
+                <p style="text-align: left;">
+                    同時，高鐵延伸宜蘭不僅可能無法改善國五塞車現況，還恐對台鐵營運造成衝擊。因為宜蘭高鐵將移轉原先搭乘台鐵、客運的旅客，自駕民眾仍會選擇開車前往東部。台鐵在人力調度不足、票箱收入下降的情況，估計將造成580億的營收虧損。
+                </p>
+                <p style="text-align: left;">
+                    十年後才完工的宜蘭高鐵，已可見預定地周遭地價悄悄上漲。宜蘭人引頸期盼「高鐵特區」能刺激產業和經濟發展，不過也有在地民眾擔心，若特定區不規劃完善、改善道路設計，可能成為下一個縣政中心淪為「蚊子館」。
+                </p>
+                <p
+                    style="margin-top: 60px; font-size: 0.9rem; opacity: 0.6; border-top: 1px solid #555; padding-top: 20px;">
+                    Copyright © 2025 國立臺灣大學新聞研究所 報導團隊<br>資料來源：內政部實價登錄、交通部鐵道局、Google Earth
+                </p>
+            </div>
+            <div style="height: 10vh;"></div>
+        </div>
+    </section>
+    <script> // ... (保留原本的 toggleSound 腳本) ...
+
+        // --- Transport Evolution Scroll Logic ---
+        document.addEventListener('scroll', () => {
+            const section = document.querySelector('.evo-scroll-section');
+            const track = document.getElementById('evoTrack');
+            const progress = document.getElementById('evoProgress');
+
+            if (!section || !track) return;
+
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            const scrollY = window.scrollY;
+
+            // Calculate how far we are into the section
+            // Start moving when section top hits top of viewport
+            let percentage = (scrollY - sectionTop) / (sectionHeight - viewportHeight);
+
+            // Clamp between 0 and 1
+            if (percentage < 0) percentage = 0;
+            if (percentage > 1) percentage = 1;
+
+            // --- Sticky Stepping Logic ---
+            // Create a "Stick and Move" effect
+            // We have 5 intervals (0->1, 1->2 ... 4->5) for 6 slides
+            let rawPos = percentage * 5;
+            let index = Math.floor(rawPos);
+            let fract = rawPos - index;
+
+            // Stick config: Hold position for the majority of the section (70%)
+            // This ensures the image stays "frozen" for reading before transitioning
+            const stickThreshold = 0.7;
+            let finalPos = rawPos;
+
+            if (fract < stickThreshold) {
+                // Sticky phase: Hold at the current index
+                finalPos = index;
+            } else {
+                // Moving phase: Interpolate the remaining 30% to the next index
+                // (fract - 0.7) / 0.3 maps 0.7..1.0 to 0..1
+                finalPos = index + (fract - stickThreshold) / (1 - stickThreshold);
+            }
+
+            // Ensure we hit the end exactly
+            if (percentage === 1) finalPos = 5;
+
+            // Move the track
+            const moveX = -(finalPos * 100); // 100vw per slide unit
+            track.style.transform = `translateX(${moveX}vw)`;
+
+            if (progress) progress.style.width = `${percentage * 100}%`;
+
+            // Trigger animations for content based on percentage
+            // 0-0.16 (Slide 1), 0.16-0.33 (Slide 2), etc.
+            const contents = document.querySelectorAll('.evo-content');
+            const currentIndex = Math.floor(percentage * 6); // 6 slides
+
+            contents.forEach((content, index) => {
+                if (index === currentIndex) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        });
+
+        // --- 衛星圖滑動功能 (Scroll Scrollytelling) ---
+        document.addEventListener("DOMContentLoaded", function () {
+            const section = document.getElementById('sliderSection');
+            const container = document.getElementById('compSlider');
+            if (!section || !container) return;
+
+            const overlay = container.querySelector('.comp-overlay');
+            const handle = container.querySelector('.comp-handle');
+
+            // 初始化位置 (0% starts from completely covered/uncovered depending on design, 
+            // usually Before (2005) is on top left. Let's start at 0% or 100%?
+            // User says "move left/right as scroll". 
+            // Let's map scroll 0% -> slider 0% (or 50%) to scroll 100% -> slider 100%.
+            // Initial position sets state before scrolling starts.
+
+            // Start state: Show 2005 (Overlay width 100%) -> End state: Show 2025 (Overlay width 0%)? 
+            // Or L->R wipe?
+            // "Part 3 Q2 From 'Million Flow' (Past) to 'Empty City' (Present)"
+            // Usually Before -> After. 
+            // 2005 (Left) -> 2025 (Right).
+            // Let's implement standard L->R wipe. 0% scroll = 0% width (Reveal right img).
+            // Wait, overlay has 2005 image. Overlay is on Left. 
+            // Width 0% = Left image hidden (Only 2025 visible).
+            // Width 100% = Left image covers all (Only 2005 visible).
+            // As we scroll down (Time passes), we should probably reveal the "After" (2025) image?
+            // But usually "Before" is on the left. 
+            // Let's just map 0-100% simply. Scroll top = 0% width, Scroll bottom = 100% width.
+
+            function onScroll() {
+                const rect = section.getBoundingClientRect();
+                const viewportHeight = window.innerHeight;
+
+                // Calculate progress
+                // When section top hits viewport top -> start typical scrolly behavior
+                // But since it's "sticky", effective scroll distance is (sectionHeight - viewportHeight)
+
+                const sectionHeight = section.offsetHeight;
+                const scrollY = window.scrollY;
+                const sectionTop = section.offsetTop;
+
+                let progress = (scrollY - sectionTop) / (sectionHeight - viewportHeight);
+
+                // Clamp
+                if (progress < 0) progress = 0;
+                if (progress > 1) progress = 1;
+
+                const percentage = progress * 100;
+
+                // Update Layout
+                overlay.style.width = percentage + '%';
+                handle.style.left = percentage + '%';
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            // Initial call
+            onScroll();
+
+            // Remove cursor hint if it existed
+            container.style.cursor = 'default';
+        });
+
+    </script>
+    <script>function toggleSound() {
+            var video = document.getElementById("heroVideo");
+            var btnText = document.getElementById("soundText");
+            var btnIcon = document.getElementById("soundIcon");
+
+            if (video.muted) {
+                video.muted = false;
+                video.volume = 1.0;
+                btnText.innerText = "音效已開啟";
+                btnIcon.innerText = "🔊";
+            }
+
+            else {
+                video.muted = true;
+                btnText.innerText = "開啟現場音效";
+                btnIcon.innerText = "🔇";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const heroSection = document.getElementById('hero');
+            const video = document.getElementById('heroVideo');
+            const btnText = document.getElementById("soundText");
+            const btnIcon = document.getElementById("soundIcon");
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        video.muted = true;
+                        btnText.innerText = "開啟現場音效";
+                        btnIcon.innerText = "🔇";
+                    }
+                });
+            }
+
+                , {
+                    threshold: 0.1
+                });
+
+            observer.observe(heroSection);
+        });
+
+        // --- Intersection Observer for Components Fade In ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const components = document.querySelectorAll('.fullscreen-comp-section');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }
+
+                , {
+                    threshold: 0.15
+                });
+
+            components.forEach(comp => observer.observe(comp));
+        });
+    </script>
+</body>
+
+</html>
